@@ -18,7 +18,7 @@
 1125	1727	8034317521742569	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/platform_common/platform/common/src/sl_slist.c.obj	bcc622860dd1a84d
 72	565	8034317511197725	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_common/src/sli_bgcommon_debug_efr32.c.obj	14d2d5718bd3405e
 167	468	8034317512169422	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_host/src/sli_bt_l2cap_config.c.obj	3e015d22d98cfdcd
-595	1594	8035864411017554	base/bt_aoa_soc_asset_tag_brd2606.out	55726d83ed62e87c
+357	1023	8037664495104562	base/bt_aoa_soc_asset_tag_brd2606.out	55726d83ed62e87c
 203	553	8034317512525082	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_host/src/sli_bt_sync_config.c.obj	cac857ff0160078d
 89	542	8035231682275129	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init.c.obj	762825d5e6c2f54d
 2286	2901	8034317533345705	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/platform_core/platform/peripheral/src/sl_hal_sysrtc.c.obj	191dce15597db478
@@ -175,7 +175,7 @@
 7747	8608	8034317587962424	CMakeFiles/slc.dir/base/36cec12fb8bf5844b3f3d1c0a5b58023/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_hash.c.obj	2a7b10be30cee91c
 8266	8661	8034317593153296	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_board_default_init.c.obj	36c6593390f60a6c
 7460	8589	8034317585096062	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/security_mbedtls_source/library/psa_crypto_storage.c.obj	91c5720962c4a85b
-126	843	8035854188956086	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj	ea30037a90c81c91
+31	356	8037664491845655	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj	ea30037a90c81c91
 202	667	8035231683417948	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_bluetooth.c.obj	6f9b58a297a322eb
 7881	8732	8034317589302021	CMakeFiles/slc.dir/base/c9ba7342955b16c98acbba508f875a87/platform/security/sl_component/se_manager/src/sl_se_manager_key_derivation.c.obj	9c1b0fe9e4ee13a6
 7695	8919	8034317587443596	CMakeFiles/slc.dir/base/3c40f3f3a31dcfb651e9bd59a447156b/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_cipher.c.obj	4bc4a6b84df43f9a
@@ -204,5 +204,5 @@
 588	1101	8034317516380662	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/board_drivers/hardware/driver/imu/src/sl_imu_dcm.c.obj	97071393e9dde4bb
 663	1227	8034317517122892	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/board_drivers/hardware/driver/imu/src/sl_imu_math.c.obj	e9345d500de10b9d
 577	1715	8034317516267005	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/board_drivers/hardware/driver/icm40627/src/sl_icm40627.c.obj	7e5dcef317638258
-34	981	8037078741429212	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj	ea30037a90c81c91
-982	1846	8037078750906286	base/bt_aoa_soc_asset_tag_brd2606.out	55726d83ed62e87c
+61	380	8037664969333343	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj	ea30037a90c81c91
+381	1008	8037664972528856	base/bt_aoa_soc_asset_tag_brd2606.out	55726d83ed62e87c

@@ -59,10 +59,6 @@
 #include "cs_reflector_config.h"
 #include "cs_sync_antenna.h"
 
-// Default CTE advertising interval (SL_GATT_SERVICE_CTE_SILABS_ADV_INTERVAL)
-// used when restoring the tone stream after a CS session ends.
-#include "sl_gatt_service_cte_silabs_config.h"
-
 // The advertising set handle allocated from Bluetooth stack (connectable:
 // AoA CTE + CS/RAS).
 static uint8_t advertising_set_handle = 0xff;
@@ -80,48 +76,6 @@ static cs_reflector_config_t cs_reflector_config = {
   .max_tx_power_dbm = CS_REFLECTOR_MAX_TX_POWER_DBM,
   .cs_sync_antenna  = CS_REFLECTOR_CS_SYNC_ANTENNA
 };
-
-// ---------------------------------------------------------------------------
-// CTE advertiser gating during CS
-// ---------------------------------------------------------------------------
-// The Silabs proprietary CTE rides on a dedicated non-connectable extended
-// advertising set that the `gatt_service_cte_silabs` component creates and
-// starts at 20 ms (SL_GATT_SERVICE_CTE_SILABS_ADV_INTERVAL). That 20 ms tone
-// stream is the dominant radio-time consumer on the tag and starves both the
-// CS reflector procedures and the IMU broadcaster (PIPELINE §2.1 / §7.4).
-//
-// The only peer that ever opens a CONNECTION to this tag is the CS initiator;
-// the AoA locator receives CTE connectionlessly (plain extended advertising,
-// no periodic-sync) and never connects. An open connection is therefore a
-// reliable "CS is active" signal. While a connection is up we stretch the CTE
-// advertising interval to its maximum so the tone stream effectively stops,
-// handing that airtime back to CS and the IMU; on disconnect we restore the
-// 20 ms cadence. The locator simply sees a gap in CTE reports and re-acquires
-// within one advertising interval once CTE resumes.
-//
-// `adv_cte_interval` and `adv_cte_start()` are non-static symbols provided by
-// the gatt_service_cte_adv component (sl_gatt_service_cte_silabs.c). They are
-// declared here so the app can drive them without pulling the component's
-// internal header; the types match the component's adv_cte_interval_t.
-extern uint16_t adv_cte_interval;        // CTE adv interval, units of 0.625 ms
-extern sl_status_t adv_cte_start(void);  // (re)start CTE adv with current params
-
-#define CTE_ADV_INTERVAL_ACTIVE  ((uint16_t)SL_GATT_SERVICE_CTE_SILABS_ADV_INTERVAL) // 20 ms
-#define CTE_ADV_INTERVAL_PAUSED  ((uint16_t)0xFFFFU)  // ~40.96 s => effectively off
-
-// Pause the CTE tone stream (CS session starting).
-static void cte_pause(void)
-{
-  adv_cte_interval = CTE_ADV_INTERVAL_PAUSED;
-  (void)adv_cte_start();
-}
-
-// Restore the 20 ms CTE tone stream (CS session ended).
-static void cte_resume(void)
-{
-  adv_cte_interval = CTE_ADV_INTERVAL_ACTIVE;
-  (void)adv_cte_start();
-}
 
 // ---------------------------------------------------------------------------
 // IMU advertising
@@ -516,12 +470,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                           conn, (unsigned long)rc);
         }
       }
-      // A connection on this tag means a CS initiator (the AoA locator never
-      // connects). Pause the 20 ms CTE tone stream so the CS procedures and
-      // the IMU broadcaster reclaim the airtime; restored on disconnect.
-      if (connection_count == 1) {
-        cte_pause();
-      }
       // Do NOT re-advertise while a peer is connected. The CS initiator's
       // scanner is still running, so any new advertising packet would cause
       // it to open a duplicate connection (CS_INITIATOR_MAX_CONNECTIONS=1
@@ -544,9 +492,6 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         sc = sl_bt_legacy_advertiser_start(advertising_set_handle,
                                            sl_bt_legacy_advertiser_connectable);
         app_assert_status(sc);
-        // CS is done — bring the CTE tone stream back to its 20 ms cadence
-        // so the AoA locator can re-acquire.
-        cte_resume();
       }
       break;
 
