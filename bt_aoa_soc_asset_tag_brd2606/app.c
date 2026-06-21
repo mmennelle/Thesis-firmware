@@ -32,6 +32,7 @@
 #include "sl_bluetooth.h"
 #include "sl_main_init.h"
 #include "sl_sleeptimer.h"
+#include "gatt_db.h"
 
 // Onboard inertial sensor: the BRD2606A carries an InvenSense ICM-40627
 // 6-axis IMU on EUSART1 SPI with a board enable line (SL_BOARD_SENSOR_IMU,
@@ -149,6 +150,9 @@ static void cte_resume(void)
 // Custom payload metadata for host-side parser.
 #define IMU_PAYLOAD_MAGIC                   0x494DU // 'IM'
 #define IMU_PAYLOAD_VERSION                 1U
+// Length of the raw IMU payload shared by the advertisement (after company id)
+// and the GATT notification: magic(2)+ver(1)+seq(1)+accel(6)+gyro(6)+quat(8).
+#define IMU_PAYLOAD_LEN                     24U
 #define IMU_STATUS_SAMPLE_VALID             0x01U
 #define IMU_STATUS_IMU_INIT_OK              0x02U
 #define IMU_STATUS_IMU_READ_OK              0x08U
@@ -173,6 +177,14 @@ static uint8_t imu_sequence = 0;
 static uint32_t imu_last_update_tick = 0;
 static uint32_t imu_update_period_ticks = 1;
 static uint32_t imu_timer_freq_hz = 32768U;
+
+// CS-piggyback transport state. While a peer is connected, a standalone
+// advertising set is starved to ~2-3 Hz, so we stream IMU samples over the
+// connection via GATT notifications instead. active_connection holds the
+// current peer handle (0xFF = none) and imu_notify_enabled tracks whether the
+// peer has subscribed to the IMU Data characteristic (CCCD = notify).
+static uint8_t active_connection = 0xFFU;
+static bool imu_notify_enabled = false;
 
 // Last good IMU output. Quaternion defaults to identity so adv packets are
 // valid before the first fused sample arrives.
@@ -312,17 +324,17 @@ static bool imu_read_sample(imu_sample_t *sample)
   return fresh;
 }
 
-// Rebuild and push the IMU advertising payload. Layout is byte-for-byte
-// identical to the MPU6050 tag:
-//   Flags(3) + ManufacturerData(28) = 31 bytes (legacy adv budget).
+// Rebuild and push the IMU sample. The same 24-byte payload feeds two
+// transports:
+//   * AoA mode (no connection): the dedicated non-connectable advertising set
+//     (Flags(3) + ManufacturerData(28) = 31 bytes, legacy adv budget).
+//   * CS/connected mode: a GATT notification over the active connection, since
+//     a standalone advertising set is starved to ~2-3 Hz while connected.
 //   payload = magic(2), ver(1), seq(1), accel(6), gyro(6), quaternion(8).
 static void update_imu_advertising_packet(void)
 {
-  uint8_t adv_data[31];
-  uint8_t offset = 0;
   imu_sample_t sample;
   const bool sample_valid = imu_read_sample(&sample);
-  sl_status_t sc;
 
   if (!bluetooth_ready || imu_set_handle == 0xFFU) {
     return;
@@ -331,52 +343,61 @@ static void update_imu_advertising_packet(void)
   if (sample_valid) {
     sample.status |= IMU_STATUS_SAMPLE_VALID;
   }
-  (void)sample.status; // status not transmitted (legacy adv budget)
+  (void)sample.status; // status not transmitted (payload budget)
 
-  // Flags AD structure (3 bytes).
+  // Build the shared 24-byte IMU payload once (single seq per fused sample).
+  uint8_t payload[IMU_PAYLOAD_LEN];
+  uint8_t p = 0;
+  write_u16_le(&payload[p], IMU_PAYLOAD_MAGIC);
+  p += 2U;
+  payload[p++] = IMU_PAYLOAD_VERSION;
+  payload[p++] = imu_sequence++;
+  write_u16_le(&payload[p], (uint16_t)sample.accel_x_mg);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.accel_y_mg);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.accel_z_mg);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.gyro_x_dps);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.gyro_y_dps);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.gyro_z_dps);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.quat_x_x10000);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.quat_y_x10000);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.quat_z_x10000);
+  p += 2U;
+  write_u16_le(&payload[p], (uint16_t)sample.quat_w_x10000);
+  p += 2U;
+  // p == IMU_PAYLOAD_LEN here.
+
+  // --- AoA transport: refresh the dedicated advertising set's payload. ---
+  uint8_t adv_data[31];
+  uint8_t offset = 0;
   adv_data[offset++] = 2U;
   adv_data[offset++] = AD_TYPE_FLAGS;
   adv_data[offset++] = AD_FLAG_LE_GENERAL_DISCOVERABLE | AD_FLAG_BR_EDR_NOT_SUPPORTED;
-
-  // Manufacturer specific AD structure.
-  // Length = type(1) + company_id(2) + payload(24) = 27.
+  // Manufacturer specific AD: len = type(1) + company_id(2) + payload(24) = 27.
   adv_data[offset++] = 27U;
   adv_data[offset++] = AD_TYPE_MANUFACTURER_SPECIFIC_DATA;
   write_u16_le(&adv_data[offset], SILABS_COMPANY_ID);
   offset += 2U;
+  memcpy(&adv_data[offset], payload, IMU_PAYLOAD_LEN);
+  offset += IMU_PAYLOAD_LEN;
+  (void)sl_bt_legacy_advertiser_set_data(imu_set_handle, 0, offset, adv_data);
 
-  write_u16_le(&adv_data[offset], IMU_PAYLOAD_MAGIC);
-  offset += 2U;
-  adv_data[offset++] = IMU_PAYLOAD_VERSION;
-  adv_data[offset++] = imu_sequence++;
-
-  write_u16_le(&adv_data[offset], (uint16_t)sample.accel_x_mg);
-  offset += 2U;
-  write_u16_le(&adv_data[offset], (uint16_t)sample.accel_y_mg);
-  offset += 2U;
-  write_u16_le(&adv_data[offset], (uint16_t)sample.accel_z_mg);
-  offset += 2U;
-
-  write_u16_le(&adv_data[offset], (uint16_t)sample.gyro_x_dps);
-  offset += 2U;
-  write_u16_le(&adv_data[offset], (uint16_t)sample.gyro_y_dps);
-  offset += 2U;
-  write_u16_le(&adv_data[offset], (uint16_t)sample.gyro_z_dps);
-  offset += 2U;
-
-  write_u16_le(&adv_data[offset], (uint16_t)sample.quat_x_x10000);
-  offset += 2U;
-  write_u16_le(&adv_data[offset], (uint16_t)sample.quat_y_x10000);
-  offset += 2U;
-  write_u16_le(&adv_data[offset], (uint16_t)sample.quat_z_x10000);
-  offset += 2U;
-  write_u16_le(&adv_data[offset], (uint16_t)sample.quat_w_x10000);
-  offset += 2U;
-
-  // IMU set is non-connectable and dedicated — never paused by connections,
-  // so we only refresh its data here.
-  sc = sl_bt_legacy_advertiser_set_data(imu_set_handle, 0, offset, adv_data);
-  (void)sc;
+  // --- CS/connected transport: notify the subscribed peer. ---
+  // Scheduled connection events sustain the full 10 Hz that the starved
+  // advertising set cannot deliver while connected.
+  if ((active_connection != 0xFFU) && imu_notify_enabled) {
+    (void)sl_bt_gatt_server_send_notification(active_connection,
+                                              gattdb_imu_data,
+                                              IMU_PAYLOAD_LEN,
+                                              payload);
+  }
 }
 
 // Set the IMU broadcast rate (on-air advertising cadence). The payload refresh
@@ -536,6 +557,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       // never start and the reflector instance stays idle until disconnect.
       {
         uint8_t conn = evt->data.evt_connection_opened.connection;
+        // Remember the peer so the IMU cadence loop can notify it. A fresh
+        // connection has not yet subscribed to the IMU characteristic.
+        active_connection = conn;
+        imu_notify_enabled = false;
         sl_status_t rc = cs_reflector_create(conn, &cs_reflector_config);
         if (rc != SL_STATUS_OK) {
           app_log_warning("[APP] cs_reflector_create(%u) -> 0x%04lx" APP_LOG_NL,
@@ -561,6 +586,10 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
     case sl_bt_evt_connection_closed_id:
       {
         uint8_t conn = evt->data.evt_connection_closed.connection;
+        if (conn == active_connection) {
+          active_connection = 0xFFU;
+          imu_notify_enabled = false;
+        }
         if (cs_reflector_identify(conn)) {
           (void)cs_reflector_delete(conn);
         }
@@ -575,6 +604,23 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         // re-acquires, and drop the IMU broadcaster to 3 Hz to yield airtime.
         cte_resume();
         imu_set_rate(IMU_RATE_AOA_HZ);
+      }
+      break;
+
+    // -------------------------------
+    // Peer (un)subscribed to a GATT characteristic. Track the IMU Data CCCD so
+    // we only notify when the CS initiator has enabled notifications.
+    case sl_bt_evt_gatt_server_characteristic_status_id:
+      if (evt->data.evt_gatt_server_characteristic_status.characteristic
+          == gattdb_imu_data) {
+        uint8_t status_flags =
+          evt->data.evt_gatt_server_characteristic_status.status_flags;
+        if (status_flags == (uint8_t)sl_bt_gatt_server_client_config) {
+          uint16_t cfg =
+            evt->data.evt_gatt_server_characteristic_status.client_config_flags;
+          imu_notify_enabled =
+            ((cfg & (uint16_t)sl_bt_gatt_server_notification) != 0U);
+        }
       }
       break;
 

@@ -162,6 +162,58 @@ static cs_initiator_config_t initiator_config = INITIATOR_CONFIG_DEFAULT;
 static rtl_config_t rtl_config = RTL_CONFIG_DEFAULT;
 static cs_initiator_instances_t cs_initiator_instances[CS_INITIATOR_MAX_CONNECTIONS];
 
+// -----------------------------------------------------------------------------
+// IMU piggyback (GATT client)
+//
+// The asset tag exposes a custom IMU Service whose "IMU Data" characteristic
+// streams the fused 24-byte inertial sample over the connection via
+// notifications. While the tag is connected for CS its standalone IMU
+// advertising set is starved to ~2-3 Hz, so we subscribe to that notification
+// here and forward each frame to the host over VCOM, where it is published at
+// the full connected rate (~10 Hz).
+//
+// IMU_DATA_CHAR_HANDLE is the tag's gattdb_imu_data value handle (see
+// bt_aoa_soc_asset_tag_brd2606/autogen/gatt_db.h). Both firmwares are built
+// from the same GATT layout so the handle is stable; if the tag's GATT
+// database changes, update this constant to the regenerated value.
+// sl_bt_gatt_set_characteristic_notification() locates the characteristic's
+// client-config descriptor itself, so no manual service/char discovery is
+// needed.
+#define IMU_DATA_CHAR_HANDLE   27u
+#define IMU_FRAME_LEN          24u
+
+typedef enum {
+  IMU_SUB_IDLE = 0,  // not subscribed yet (waiting for CS to settle)
+  IMU_SUB_PENDING,   // CCCD write issued, awaiting procedure completion
+  IMU_SUB_DONE       // notifications enabled
+} imu_sub_state_t;
+
+static uint8_t imu_conn = SL_BT_INVALID_CONNECTION_HANDLE;
+static imu_sub_state_t imu_sub_state = IMU_SUB_IDLE;
+static bool imu_sub_arm = false; // set once CS is producing results
+
+// Forward one IMU frame to the host as a single distinct, easily-parsed line:
+// "[IMU] " + uppercase hex + "\n". The "[IMU] " prefix keeps it clear of the
+// host cs_reader's distance-row and gate-ack ("[APP] ...") patterns.
+static void imu_forward_frame(const uint8_t *data, size_t len)
+{
+  static const char hexd[] = "0123456789ABCDEF";
+  char line[6 + (IMU_FRAME_LEN * 2) + 1];
+  size_t o = 0u;
+  line[o++] = '[';
+  line[o++] = 'I';
+  line[o++] = 'M';
+  line[o++] = 'U';
+  line[o++] = ']';
+  line[o++] = ' ';
+  for (size_t i = 0u; (i < len) && (i < IMU_FRAME_LEN); i++) {
+    line[o++] = hexd[(data[i] >> 4) & 0x0Fu];
+    line[o++] = hexd[data[i] & 0x0Fu];
+  }
+  line[o++] = '\n';
+  (void)sl_iostream_write(sl_iostream_vcom_handle, line, o);
+}
+
 // Derive the active connection count from the instance table so the value
 // can never get out of sync with the actual array contents (prevents stale
 // counter leaks that pinned creation at SL_STATUS_FULL / 0x1c).
@@ -475,6 +527,23 @@ void app_process_action(void)
                                        initiator_config.cs_main_mode);
     }
   }
+  // Lazily subscribe to the tag's IMU notification once CS is up (armed by the
+  // first CS result, so cs_initiator's own RAS GATT setup is complete) and the
+  // GATT link is quiescent. Retried on busy until the CCCD write is accepted.
+  if (cs_gate_enabled
+      && (imu_conn != SL_BT_INVALID_CONNECTION_HANDLE)
+      && imu_sub_arm
+      && (imu_sub_state == IMU_SUB_IDLE)) {
+    sl_status_t isc = sl_bt_gatt_set_characteristic_notification(imu_conn,
+                                                                 IMU_DATA_CHAR_HANDLE,
+                                                                 sl_bt_gatt_notification);
+    if (isc == SL_STATUS_OK) {
+      imu_sub_state = IMU_SUB_PENDING;
+      log_info(APP_PREFIX "IMU notify: subscribing (handle %u)" NL,
+               IMU_DATA_CHAR_HANDLE);
+    }
+    // else: stack busy with a CS GATT procedure; retry on the next tick.
+  }
   /////////////////////////////////////////////////////////////////////////////
   // Put your additional application code here!                              //
   // This is called infinitely.                                              //
@@ -722,6 +791,9 @@ static void cs_on_result(const uint8_t conn_handle,
     cs_initiator_instances[initiator_num].measurement_arrived = true;
     cs_initiator_instances[initiator_num].measurement_cnt++;
     cs_initiator_instances[initiator_num].ranging_counter = ranging_counter;
+    // CS is producing results: the connection's GATT setup is complete, so it
+    // is now safe to subscribe to the tag's IMU notification.
+    imu_sub_arm = true;
   } else {
     log_info(APP_INSTANCE_PREFIX "RTL process skipped!" NL,
              conn_handle);
@@ -1281,6 +1353,38 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
                 evt->data.evt_system_resource_exhausted.num_buffer_allocation_failures,
                 evt->data.evt_system_resource_exhausted.num_heap_allocation_failures);
       break;
+
+    // -------------------------------
+    // IMU piggyback: a notification arrived from the tag's IMU Data
+    // characteristic. Forward the raw 24-byte frame to the host over VCOM.
+    // (RAS notifications use different handles and are processed internally by
+    // the cs_initiator component, so filtering on the IMU handle is safe.)
+    case sl_bt_evt_gatt_characteristic_value_id:
+      if ((evt->data.evt_gatt_characteristic_value.connection == imu_conn)
+          && (evt->data.evt_gatt_characteristic_value.characteristic == IMU_DATA_CHAR_HANDLE)
+          && (evt->data.evt_gatt_characteristic_value.att_opcode
+              == sl_bt_gatt_handle_value_notification)) {
+        imu_forward_frame(evt->data.evt_gatt_characteristic_value.value.data,
+                          evt->data.evt_gatt_characteristic_value.value.len);
+      }
+      break;
+
+    // -------------------------------
+    // GATT procedure finished. We only track our own IMU CCCD write here; once
+    // a notification subscription was queued (IMU_SUB_PENDING) the next
+    // completion on that connection is ours (the stack serializes procedures).
+    case sl_bt_evt_gatt_procedure_completed_id:
+      if ((evt->data.evt_gatt_procedure_completed.connection == imu_conn)
+          && (imu_sub_state == IMU_SUB_PENDING)) {
+        if (evt->data.evt_gatt_procedure_completed.result == SL_STATUS_OK) {
+          imu_sub_state = IMU_SUB_DONE;
+          log_info(APP_PREFIX "IMU notify: enabled" NL);
+        } else {
+          // Subscription failed (e.g. raced a CS procedure); retry next tick.
+          imu_sub_state = IMU_SUB_IDLE;
+        }
+      }
+      break;
     default:
       break;
   }
@@ -1331,10 +1435,20 @@ void ble_peer_manager_on_event_initiator(ble_peer_manager_evt_type_t * event)
                address->addr[0]);
       check_cli_values();
       cs_initiator_display_set_measurement_mode(initiator_config.cs_main_mode, rtl_config.algo_mode);
+      // Arm IMU piggyback for this connection; the actual subscription is
+      // deferred until CS is producing results (see cs_on_result / app_process_action).
+      imu_conn = event->connection_id;
+      imu_sub_state = IMU_SUB_IDLE;
+      imu_sub_arm = false;
 
       break;
     case BLE_PEER_MANAGER_ON_CONN_CLOSED:
       log_info(APP_INSTANCE_PREFIX "Connection closed" NL, event->connection_id);
+      if (event->connection_id == imu_conn) {
+        imu_conn = SL_BT_INVALID_CONNECTION_HANDLE;
+        imu_sub_state = IMU_SUB_IDLE;
+        imu_sub_arm = false;
+      }
       sc = cs_initiator_delete(event->connection_id);
       if ((sc == SL_STATUS_NOT_FOUND) || (sc == SL_STATUS_INVALID_HANDLE)) {
         log_info(APP_INSTANCE_PREFIX "Initiator instance not found" NL, event->connection_id);

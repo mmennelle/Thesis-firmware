@@ -253,3 +253,5 @@
 43	313	8037722318228553	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_init_eusart_instances.c.obj	12eaf276540e98a6
 34	582	8037722318159052	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj	8b703f05f91d0345
 583	1214	8037722323646107	base/bt_cs_soc_initiator_2.out	642f2563c836f73b
+43	760	8037755299639048	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj	8b703f05f91d0345
+762	1552	8037755306877819	base/bt_cs_soc_initiator_2.out	642f2563c836f73b
