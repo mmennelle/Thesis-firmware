@@ -76,6 +76,11 @@
 // Security
 #include "security.h"
 
+// VCOM command gate I/O (AoA <-> CS arbitration, host-driven)
+#include <string.h>
+#include "sl_iostream.h"
+#include "sl_iostream_handles.h"
+
 // -----------------------------------------------------------------------------
 // Macros
 
@@ -157,6 +162,58 @@ static cs_initiator_config_t initiator_config = INITIATOR_CONFIG_DEFAULT;
 static rtl_config_t rtl_config = RTL_CONFIG_DEFAULT;
 static cs_initiator_instances_t cs_initiator_instances[CS_INITIATOR_MAX_CONNECTIONS];
 
+// -----------------------------------------------------------------------------
+// IMU piggyback (GATT client)
+//
+// The asset tag exposes a custom IMU Service whose "IMU Data" characteristic
+// streams the fused 24-byte inertial sample over the connection via
+// notifications. While the tag is connected for CS its standalone IMU
+// advertising set is starved to ~2-3 Hz, so we subscribe to that notification
+// here and forward each frame to the host over VCOM, where it is published at
+// the full connected rate (~10 Hz).
+//
+// IMU_DATA_CHAR_HANDLE is the tag's gattdb_imu_data value handle (see
+// bt_aoa_soc_asset_tag_brd2606/autogen/gatt_db.h). Both firmwares are built
+// from the same GATT layout so the handle is stable; if the tag's GATT
+// database changes, update this constant to the regenerated value.
+// sl_bt_gatt_set_characteristic_notification() locates the characteristic's
+// client-config descriptor itself, so no manual service/char discovery is
+// needed.
+#define IMU_DATA_CHAR_HANDLE   27u
+#define IMU_FRAME_LEN          24u
+
+typedef enum {
+  IMU_SUB_IDLE = 0,  // not subscribed yet (waiting for CS to settle)
+  IMU_SUB_PENDING,   // CCCD write issued, awaiting procedure completion
+  IMU_SUB_DONE       // notifications enabled
+} imu_sub_state_t;
+
+static uint8_t imu_conn = SL_BT_INVALID_CONNECTION_HANDLE;
+static imu_sub_state_t imu_sub_state = IMU_SUB_IDLE;
+static bool imu_sub_arm = false; // set once CS is producing results
+
+// Forward one IMU frame to the host as a single distinct, easily-parsed line:
+// "[IMU] " + uppercase hex + "\n". The "[IMU] " prefix keeps it clear of the
+// host cs_reader's distance-row and gate-ack ("[APP] ...") patterns.
+static void imu_forward_frame(const uint8_t *data, size_t len)
+{
+  static const char hexd[] = "0123456789ABCDEF";
+  char line[6 + (IMU_FRAME_LEN * 2) + 1];
+  size_t o = 0u;
+  line[o++] = '[';
+  line[o++] = 'I';
+  line[o++] = 'M';
+  line[o++] = 'U';
+  line[o++] = ']';
+  line[o++] = ' ';
+  for (size_t i = 0u; (i < len) && (i < IMU_FRAME_LEN); i++) {
+    line[o++] = hexd[(data[i] >> 4) & 0x0Fu];
+    line[o++] = hexd[data[i] & 0x0Fu];
+  }
+  line[o++] = '\n';
+  (void)sl_iostream_write(sl_iostream_vcom_handle, line, o);
+}
+
 // Derive the active connection count from the instance table so the value
 // can never get out of sync with the actual array contents (prevents stale
 // counter leaks that pinned creation at SL_STATUS_FULL / 0x1c).
@@ -172,6 +229,164 @@ static uint8_t count_active_reflector_connections(void)
 }
 static app_timer_t display_timer;
 static uint8_t measurement_counter = 0u;
+
+// -----------------------------------------------------------------------------
+// VCOM command gate (AoA <-> CS arbitration)
+//
+// The combined AoA+CS asset tag has a single radio and can only run ONE
+// modality at a time. The host-side mode_controller decides which: in AoA
+// mode the tag must stay UNCONNECTED so its CTE tone stream runs; for CS mode
+// this initiator connects and ranges. The initiator therefore stays IDLE
+// until the host explicitly enables it over VCOM:
+//
+//   host -> initiator : "GO\n"   start scanning + connect + range
+//                       "STOP\n" stop ranging, close connection, go idle
+//   initiator -> host : a line containing "STARTED" (for GO) or "STOPPED"
+//                       (for STOP), '\n'-terminated. Acked so the host can
+//                       retry on timeout — VCOM is not lossless. GO is acked on
+//                       "scanning enabled" (fits the host's 3 s budget); STOP
+//                       is acked only AFTER the link is actually down so the
+//                       host's dbgmode->OUT flip can't race a live CS link.
+//
+// Boot default is STOP: if the initiator resets mid-session it comes up idle
+// and never auto-reconnects, so it can no longer silently pin the tag in CS
+// mode (the original always-on-connect failure mode).
+static bool cs_gate_enabled = false;
+static bool gate_stop_ack_pending = false; // STOPPED deferred until conn closes
+static char gate_cmd[16];
+static uint8_t gate_cmd_len = 0u;
+
+static void gate_send(const char *msg)
+{
+  (void)sl_iostream_write(sl_iostream_vcom_handle, msg, strlen(msg));
+}
+
+// Start scanning for a reflector ONLY when the host has enabled CS. Every
+// (re)scan site funnels through here so a STOP can never be undone by an
+// automatic reconnect.
+static sl_status_t gated_start_scanning(void)
+{
+  if (!cs_gate_enabled) {
+    return SL_STATUS_OK; // idle: stay disconnected so the tag runs AoA
+  }
+  sl_status_t sc = ble_peer_manager_central_create_connection();
+  if (sc == SL_STATUS_OK) {
+    cs_initiator_display_start_scanning();
+  }
+  return sc;
+}
+
+static void gate_close_all(void)
+{
+  for (uint8_t i = 0u; i < CS_INITIATOR_MAX_CONNECTIONS; i++) {
+    uint8_t h = cs_initiator_instances[i].conn_handle;
+    if (h != SL_BT_INVALID_CONNECTION_HANDLE) {
+      (void)ble_peer_manager_central_close_connection(h);
+    }
+  }
+}
+
+// Fully reset the peer-manager central state so a later GO can cleanly restart
+// scanning. Calling sl_bt_scanner_stop() directly stops the hardware scanner
+// but leaves the peer manager's internal `scanning` flag stuck true, which
+// makes the next create_connection() a silent no-op ("Already scanning") so the
+// initiator never reconnects. init() clears that state but also wipes the scan
+// filter, so we re-apply the boot filter (name + RAS service UUID) here.
+static void gate_reset_peer_manager(void)
+{
+  ble_peer_manager_central_init();
+  ble_peer_manager_filter_init();
+  (void)ble_peer_manager_set_filter_device_name(REFLECTOR_DEVICE_NAME,
+                                                strlen(REFLECTOR_DEVICE_NAME),
+                                                false);
+  uint16_t ras_service_uuid = CS_RAS_SERVICE_UUID;
+  (void)ble_peer_manager_set_filter_service_uuid16((sl_bt_uuid_16_t *)&ras_service_uuid);
+}
+
+// GO: enable scanning/initiating, then ack on "scanning enabled" (NOT full
+// connect — BLE connect + CS setup can exceed the host's 3 s timeout).
+static void gate_go(void)
+{
+  if (!cs_gate_enabled) {
+    cs_gate_enabled = true;
+    gate_stop_ack_pending = false; // a fresh GO cancels a pending STOP ack
+    (void)gated_start_scanning();
+    log_info(APP_PREFIX "CS gate -> GO (CS mode)" NL);
+  }
+  gate_send("[APP] STARTED\n");
+}
+
+// STOP: stop scanning + drop the link, go idle. Ack only once the connection
+// is actually closed (deferred to the conn_closed handler); if already idle,
+// ack immediately so the host's idempotent retries still succeed.
+static void gate_stop(void)
+{
+  bool was_enabled = cs_gate_enabled;
+  cs_gate_enabled = false;
+  if (was_enabled) {
+    log_info(APP_PREFIX "CS gate -> STOP (AoA mode)" NL);
+  }
+  if (count_active_reflector_connections() > 0u) {
+    gate_stop_ack_pending = true;
+    gate_close_all(); // STOPPED is sent from conn_closed once the link drops
+  } else {
+    // Not connected (idle or mid-scan): reset the peer manager so the hardware
+    // scanner stops AND the internal `scanning` flag clears. A bare
+    // sl_bt_scanner_stop() here would wedge the next GO into a silent no-op.
+    gate_reset_peer_manager();
+    gate_stop_ack_pending = false;
+    gate_send("[APP] STOPPED\n");
+  }
+}
+
+static void gate_handle_line(void)
+{
+  // Trim leading/trailing whitespace and match the WHOLE trimmed line so log
+  // noise can never trigger a command.
+  uint8_t s = 0u;
+  while (s < gate_cmd_len && (gate_cmd[s] == ' ' || gate_cmd[s] == '\t')) {
+    s++;
+  }
+  uint8_t e = gate_cmd_len;
+  while (e > s && (gate_cmd[e - 1u] == ' ' || gate_cmd[e - 1u] == '\t')) {
+    e--;
+  }
+  gate_cmd[e] = '\0';
+  const char *line = (const char *)&gate_cmd[s];
+  if (*line == '\0') {
+    return;
+  }
+  if (strcmp(line, "STOP") == 0) {
+    gate_stop();
+  } else if (strcmp(line, "GO") == 0) {
+    gate_go();
+  }
+  // Unknown line: ignore silently.
+}
+
+// Poll VCOM for framed line commands. Called every app_process_action tick.
+static void gate_poll_vcom(void)
+{
+  uint8_t buf[16];
+  size_t n = 0u;
+  if (sl_iostream_read(sl_iostream_vcom_handle, buf, sizeof(buf), &n) != SL_STATUS_OK) {
+    return;
+  }
+  for (size_t i = 0u; i < n; i++) {
+    char c = (char)buf[i];
+    if (c == '\r') {
+      continue;
+    }
+    if (c == '\n') {
+      gate_handle_line();
+      gate_cmd_len = 0u;
+    } else if (gate_cmd_len < sizeof(gate_cmd) - 1u) {
+      gate_cmd[gate_cmd_len++] = c;
+    } else {
+      gate_cmd_len = 0u; // overflow: resync on next newline
+    }
+  }
+}
 
 /******************************************************************************
  * Application Init
@@ -265,6 +480,7 @@ void app_init(void)
  *****************************************************************************/
 void app_process_action(void)
 {
+  gate_poll_vcom();
   sl_status_t sc = security_send_confirmation();
   if (sc != SL_STATUS_OK) {
     log_error(APP_PREFIX "Failed to send security confirmation: 0x%04lx" NL, (unsigned long)sc);
@@ -310,6 +526,23 @@ void app_process_action(void)
                                        rtl_config.algo_mode,
                                        initiator_config.cs_main_mode);
     }
+  }
+  // Lazily subscribe to the tag's IMU notification once CS is up (armed by the
+  // first CS result, so cs_initiator's own RAS GATT setup is complete) and the
+  // GATT link is quiescent. Retried on busy until the CCCD write is accepted.
+  if (cs_gate_enabled
+      && (imu_conn != SL_BT_INVALID_CONNECTION_HANDLE)
+      && imu_sub_arm
+      && (imu_sub_state == IMU_SUB_IDLE)) {
+    sl_status_t isc = sl_bt_gatt_set_characteristic_notification(imu_conn,
+                                                                 IMU_DATA_CHAR_HANDLE,
+                                                                 sl_bt_gatt_notification);
+    if (isc == SL_STATUS_OK) {
+      imu_sub_state = IMU_SUB_PENDING;
+      log_info(APP_PREFIX "IMU notify: subscribing (handle %u)" NL,
+               IMU_DATA_CHAR_HANDLE);
+    }
+    // else: stack busy with a CS GATT procedure; retry on the next tick.
   }
   /////////////////////////////////////////////////////////////////////////////
   // Put your additional application code here!                              //
@@ -558,6 +791,9 @@ static void cs_on_result(const uint8_t conn_handle,
     cs_initiator_instances[initiator_num].measurement_arrived = true;
     cs_initiator_instances[initiator_num].measurement_cnt++;
     cs_initiator_instances[initiator_num].ranging_counter = ranging_counter;
+    // CS is producing results: the connection's GATT setup is complete, so it
+    // is now safe to subscribe to the tag's IMU notification.
+    imu_sub_arm = true;
   } else {
     log_info(APP_INSTANCE_PREFIX "RTL process skipped!" NL,
              conn_handle);
@@ -913,9 +1149,8 @@ static void cs_on_error(uint8_t conn_handle, cs_error_event_t err_evt, sl_status
       // If closing the connection fails no connnection_closed event will be received
       // so we need to restart scanning here if needed
       if (status != SL_STATUS_OK) {
-        sc = ble_peer_manager_central_create_connection();
+        sc = gated_start_scanning();
         app_assert_status(sc);
-        app_log_info(APP_PREFIX "Scanning restarted for new reflector connections..." NL);
       }
       break;
   }
@@ -989,11 +1224,10 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
       app_assert_status(sc);
 
 #ifndef SL_CATALOG_CS_INITIATOR_CLI_PRESENT
-      sc = ble_peer_manager_central_create_connection();
-      app_assert_status(sc);
-      cs_initiator_display_start_scanning();
-      // Start scanning for reflector connections
-      log_info(APP_PREFIX "Scanning started for reflector connections..." NL);
+      // VCOM gate: boot idle (default STOP) so a mid-session initiator reset
+      // comes up in AoA mode and never auto-reconnects. The host mode_controller
+      // sends "GO\n" over VCOM to begin CS ranging.
+      log_info(APP_PREFIX "CS gate idle (STOP) - waiting for GO on VCOM..." NL);
 #else
       log_info("CS CLI is active." NL);
 #endif // SL_CATALOG_CS_INITIATOR_CLI_PRESENT
@@ -1105,10 +1339,8 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
       }
       // Scan for new reflector connections if we have room for more
       if (count_active_reflector_connections() < CS_INITIATOR_MAX_CONNECTIONS) {
-        sc = ble_peer_manager_central_create_connection();
+        sc = gated_start_scanning();
         app_assert_status(sc);
-        cs_initiator_display_start_scanning();
-        log_info(APP_PREFIX "Scanning restarted for new reflector connections..." NL);
       }
       break;
     }
@@ -1120,6 +1352,38 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
                 evt->data.evt_system_resource_exhausted.num_buffers_discarded,
                 evt->data.evt_system_resource_exhausted.num_buffer_allocation_failures,
                 evt->data.evt_system_resource_exhausted.num_heap_allocation_failures);
+      break;
+
+    // -------------------------------
+    // IMU piggyback: a notification arrived from the tag's IMU Data
+    // characteristic. Forward the raw 24-byte frame to the host over VCOM.
+    // (RAS notifications use different handles and are processed internally by
+    // the cs_initiator component, so filtering on the IMU handle is safe.)
+    case sl_bt_evt_gatt_characteristic_value_id:
+      if ((evt->data.evt_gatt_characteristic_value.connection == imu_conn)
+          && (evt->data.evt_gatt_characteristic_value.characteristic == IMU_DATA_CHAR_HANDLE)
+          && (evt->data.evt_gatt_characteristic_value.att_opcode
+              == sl_bt_gatt_handle_value_notification)) {
+        imu_forward_frame(evt->data.evt_gatt_characteristic_value.value.data,
+                          evt->data.evt_gatt_characteristic_value.value.len);
+      }
+      break;
+
+    // -------------------------------
+    // GATT procedure finished. We only track our own IMU CCCD write here; once
+    // a notification subscription was queued (IMU_SUB_PENDING) the next
+    // completion on that connection is ours (the stack serializes procedures).
+    case sl_bt_evt_gatt_procedure_completed_id:
+      if ((evt->data.evt_gatt_procedure_completed.connection == imu_conn)
+          && (imu_sub_state == IMU_SUB_PENDING)) {
+        if (evt->data.evt_gatt_procedure_completed.result == SL_STATUS_OK) {
+          imu_sub_state = IMU_SUB_DONE;
+          log_info(APP_PREFIX "IMU notify: enabled" NL);
+        } else {
+          // Subscription failed (e.g. raced a CS procedure); retry next tick.
+          imu_sub_state = IMU_SUB_IDLE;
+        }
+      }
       break;
     default:
       break;
@@ -1171,10 +1435,20 @@ void ble_peer_manager_on_event_initiator(ble_peer_manager_evt_type_t * event)
                address->addr[0]);
       check_cli_values();
       cs_initiator_display_set_measurement_mode(initiator_config.cs_main_mode, rtl_config.algo_mode);
+      // Arm IMU piggyback for this connection; the actual subscription is
+      // deferred until CS is producing results (see cs_on_result / app_process_action).
+      imu_conn = event->connection_id;
+      imu_sub_state = IMU_SUB_IDLE;
+      imu_sub_arm = false;
 
       break;
     case BLE_PEER_MANAGER_ON_CONN_CLOSED:
       log_info(APP_INSTANCE_PREFIX "Connection closed" NL, event->connection_id);
+      if (event->connection_id == imu_conn) {
+        imu_conn = SL_BT_INVALID_CONNECTION_HANDLE;
+        imu_sub_state = IMU_SUB_IDLE;
+        imu_sub_arm = false;
+      }
       sc = cs_initiator_delete(event->connection_id);
       if ((sc == SL_STATUS_NOT_FOUND) || (sc == SL_STATUS_INVALID_HANDLE)) {
         log_info(APP_INSTANCE_PREFIX "Initiator instance not found" NL, event->connection_id);
@@ -1183,11 +1457,15 @@ void ble_peer_manager_on_event_initiator(ble_peer_manager_evt_type_t * event)
         log_info(APP_INSTANCE_PREFIX "Initiator instance removed" NL, event->connection_id);
       }
       delete_initiator_instance(event->connection_id);
-      // Restart scanning for new reflector connections
-      sc = ble_peer_manager_central_create_connection();
+      // If a STOP is waiting on the link to actually drop, ack now that it has.
+      if (gate_stop_ack_pending && (count_active_reflector_connections() == 0u)) {
+        gate_stop_ack_pending = false;
+        gate_send("[APP] STOPPED\n");
+      }
+      // Only rescan if the host gate still wants CS; a STOP-triggered close
+      // must stay closed so the tag returns to AoA mode.
+      sc = gated_start_scanning();
       app_assert_status(sc);
-      cs_initiator_display_start_scanning();
-      log_info(APP_PREFIX "Scanning started for reflector connections..." NL);
       break;
 
     case BLE_PEER_MANAGER_ERROR:

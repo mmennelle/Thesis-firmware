@@ -47,5 +47,13 @@
         <properties read="true" read_requirement="mandatory"/>
       </characteristic>
     </service>
+    <service advertise="false" name="IMU Service" requirement="mandatory" type="primary" uuid="e0f5a5b0-1c2d-4e3f-8a9b-aabbccddeeff">
+      <informativeText>Custom IMU service. Streams the fused inertial sample (same 24-byte payload as the IMU manufacturer advertisement) over the active connection via notifications. Used to piggyback IMU on the CS link, where a standalone advertising set is starved to ~2-3 Hz.</informativeText>
+      <characteristic name="IMU Data" id="imu_data" uuid="e0f5a5b1-1c2d-4e3f-8a9b-aabbccddeeff">
+        <informativeText>24-byte little-endian payload: magic(2)=0x4D49 'IM', version(1), seq(1), accel_xyz_mg(int16 x3), gyro_xyz_dps(int16 x3), quat_xyzw_x10000(int16 x4).</informativeText>
+        <value length="24" type="hex" variable_length="false"/>
+        <properties notify="true" notify_requirement="optional" read="true" read_requirement="optional"/>
+      </characteristic>
+    </service>
   </gatt>
 </project>
