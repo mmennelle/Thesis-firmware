@@ -76,6 +76,11 @@
 // Security
 #include "security.h"
 
+// VCOM command gate I/O (AoA <-> CS arbitration, host-driven)
+#include <string.h>
+#include "sl_iostream.h"
+#include "sl_iostream_handles.h"
+
 // -----------------------------------------------------------------------------
 // Macros
 
@@ -173,6 +178,164 @@ static uint8_t count_active_reflector_connections(void)
 static app_timer_t display_timer;
 static uint8_t measurement_counter = 0u;
 
+// -----------------------------------------------------------------------------
+// VCOM command gate (AoA <-> CS arbitration)
+//
+// The combined AoA+CS asset tag has a single radio and can only run ONE
+// modality at a time. The host-side mode_controller decides which: in AoA
+// mode the tag must stay UNCONNECTED so its CTE tone stream runs; for CS mode
+// this initiator connects and ranges. The initiator therefore stays IDLE
+// until the host explicitly enables it over VCOM:
+//
+//   host -> initiator : "GO\n"   start scanning + connect + range
+//                       "STOP\n" stop ranging, close connection, go idle
+//   initiator -> host : a line containing "STARTED" (for GO) or "STOPPED"
+//                       (for STOP), '\n'-terminated. Acked so the host can
+//                       retry on timeout — VCOM is not lossless. GO is acked on
+//                       "scanning enabled" (fits the host's 3 s budget); STOP
+//                       is acked only AFTER the link is actually down so the
+//                       host's dbgmode->OUT flip can't race a live CS link.
+//
+// Boot default is STOP: if the initiator resets mid-session it comes up idle
+// and never auto-reconnects, so it can no longer silently pin the tag in CS
+// mode (the original always-on-connect failure mode).
+static bool cs_gate_enabled = false;
+static bool gate_stop_ack_pending = false; // STOPPED deferred until conn closes
+static char gate_cmd[16];
+static uint8_t gate_cmd_len = 0u;
+
+static void gate_send(const char *msg)
+{
+  (void)sl_iostream_write(sl_iostream_vcom_handle, msg, strlen(msg));
+}
+
+// Start scanning for a reflector ONLY when the host has enabled CS. Every
+// (re)scan site funnels through here so a STOP can never be undone by an
+// automatic reconnect.
+static sl_status_t gated_start_scanning(void)
+{
+  if (!cs_gate_enabled) {
+    return SL_STATUS_OK; // idle: stay disconnected so the tag runs AoA
+  }
+  sl_status_t sc = ble_peer_manager_central_create_connection();
+  if (sc == SL_STATUS_OK) {
+    cs_initiator_display_start_scanning();
+  }
+  return sc;
+}
+
+static void gate_close_all(void)
+{
+  for (uint8_t i = 0u; i < CS_INITIATOR_MAX_CONNECTIONS; i++) {
+    uint8_t h = cs_initiator_instances[i].conn_handle;
+    if (h != SL_BT_INVALID_CONNECTION_HANDLE) {
+      (void)ble_peer_manager_central_close_connection(h);
+    }
+  }
+}
+
+// Fully reset the peer-manager central state so a later GO can cleanly restart
+// scanning. Calling sl_bt_scanner_stop() directly stops the hardware scanner
+// but leaves the peer manager's internal `scanning` flag stuck true, which
+// makes the next create_connection() a silent no-op ("Already scanning") so the
+// initiator never reconnects. init() clears that state but also wipes the scan
+// filter, so we re-apply the boot filter (name + RAS service UUID) here.
+static void gate_reset_peer_manager(void)
+{
+  ble_peer_manager_central_init();
+  ble_peer_manager_filter_init();
+  (void)ble_peer_manager_set_filter_device_name(REFLECTOR_DEVICE_NAME,
+                                                strlen(REFLECTOR_DEVICE_NAME),
+                                                false);
+  uint16_t ras_service_uuid = CS_RAS_SERVICE_UUID;
+  (void)ble_peer_manager_set_filter_service_uuid16((sl_bt_uuid_16_t *)&ras_service_uuid);
+}
+
+// GO: enable scanning/initiating, then ack on "scanning enabled" (NOT full
+// connect — BLE connect + CS setup can exceed the host's 3 s timeout).
+static void gate_go(void)
+{
+  if (!cs_gate_enabled) {
+    cs_gate_enabled = true;
+    gate_stop_ack_pending = false; // a fresh GO cancels a pending STOP ack
+    (void)gated_start_scanning();
+    log_info(APP_PREFIX "CS gate -> GO (CS mode)" NL);
+  }
+  gate_send("[APP] STARTED\n");
+}
+
+// STOP: stop scanning + drop the link, go idle. Ack only once the connection
+// is actually closed (deferred to the conn_closed handler); if already idle,
+// ack immediately so the host's idempotent retries still succeed.
+static void gate_stop(void)
+{
+  bool was_enabled = cs_gate_enabled;
+  cs_gate_enabled = false;
+  if (was_enabled) {
+    log_info(APP_PREFIX "CS gate -> STOP (AoA mode)" NL);
+  }
+  if (count_active_reflector_connections() > 0u) {
+    gate_stop_ack_pending = true;
+    gate_close_all(); // STOPPED is sent from conn_closed once the link drops
+  } else {
+    // Not connected (idle or mid-scan): reset the peer manager so the hardware
+    // scanner stops AND the internal `scanning` flag clears. A bare
+    // sl_bt_scanner_stop() here would wedge the next GO into a silent no-op.
+    gate_reset_peer_manager();
+    gate_stop_ack_pending = false;
+    gate_send("[APP] STOPPED\n");
+  }
+}
+
+static void gate_handle_line(void)
+{
+  // Trim leading/trailing whitespace and match the WHOLE trimmed line so log
+  // noise can never trigger a command.
+  uint8_t s = 0u;
+  while (s < gate_cmd_len && (gate_cmd[s] == ' ' || gate_cmd[s] == '\t')) {
+    s++;
+  }
+  uint8_t e = gate_cmd_len;
+  while (e > s && (gate_cmd[e - 1u] == ' ' || gate_cmd[e - 1u] == '\t')) {
+    e--;
+  }
+  gate_cmd[e] = '\0';
+  const char *line = (const char *)&gate_cmd[s];
+  if (*line == '\0') {
+    return;
+  }
+  if (strcmp(line, "STOP") == 0) {
+    gate_stop();
+  } else if (strcmp(line, "GO") == 0) {
+    gate_go();
+  }
+  // Unknown line: ignore silently.
+}
+
+// Poll VCOM for framed line commands. Called every app_process_action tick.
+static void gate_poll_vcom(void)
+{
+  uint8_t buf[16];
+  size_t n = 0u;
+  if (sl_iostream_read(sl_iostream_vcom_handle, buf, sizeof(buf), &n) != SL_STATUS_OK) {
+    return;
+  }
+  for (size_t i = 0u; i < n; i++) {
+    char c = (char)buf[i];
+    if (c == '\r') {
+      continue;
+    }
+    if (c == '\n') {
+      gate_handle_line();
+      gate_cmd_len = 0u;
+    } else if (gate_cmd_len < sizeof(gate_cmd) - 1u) {
+      gate_cmd[gate_cmd_len++] = c;
+    } else {
+      gate_cmd_len = 0u; // overflow: resync on next newline
+    }
+  }
+}
+
 /******************************************************************************
  * Application Init
  *****************************************************************************/
@@ -265,6 +428,7 @@ void app_init(void)
  *****************************************************************************/
 void app_process_action(void)
 {
+  gate_poll_vcom();
   sl_status_t sc = security_send_confirmation();
   if (sc != SL_STATUS_OK) {
     log_error(APP_PREFIX "Failed to send security confirmation: 0x%04lx" NL, (unsigned long)sc);
@@ -913,9 +1077,8 @@ static void cs_on_error(uint8_t conn_handle, cs_error_event_t err_evt, sl_status
       // If closing the connection fails no connnection_closed event will be received
       // so we need to restart scanning here if needed
       if (status != SL_STATUS_OK) {
-        sc = ble_peer_manager_central_create_connection();
+        sc = gated_start_scanning();
         app_assert_status(sc);
-        app_log_info(APP_PREFIX "Scanning restarted for new reflector connections..." NL);
       }
       break;
   }
@@ -989,11 +1152,10 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
       app_assert_status(sc);
 
 #ifndef SL_CATALOG_CS_INITIATOR_CLI_PRESENT
-      sc = ble_peer_manager_central_create_connection();
-      app_assert_status(sc);
-      cs_initiator_display_start_scanning();
-      // Start scanning for reflector connections
-      log_info(APP_PREFIX "Scanning started for reflector connections..." NL);
+      // VCOM gate: boot idle (default STOP) so a mid-session initiator reset
+      // comes up in AoA mode and never auto-reconnects. The host mode_controller
+      // sends "GO\n" over VCOM to begin CS ranging.
+      log_info(APP_PREFIX "CS gate idle (STOP) - waiting for GO on VCOM..." NL);
 #else
       log_info("CS CLI is active." NL);
 #endif // SL_CATALOG_CS_INITIATOR_CLI_PRESENT
@@ -1105,10 +1267,8 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
       }
       // Scan for new reflector connections if we have room for more
       if (count_active_reflector_connections() < CS_INITIATOR_MAX_CONNECTIONS) {
-        sc = ble_peer_manager_central_create_connection();
+        sc = gated_start_scanning();
         app_assert_status(sc);
-        cs_initiator_display_start_scanning();
-        log_info(APP_PREFIX "Scanning restarted for new reflector connections..." NL);
       }
       break;
     }
@@ -1183,11 +1343,15 @@ void ble_peer_manager_on_event_initiator(ble_peer_manager_evt_type_t * event)
         log_info(APP_INSTANCE_PREFIX "Initiator instance removed" NL, event->connection_id);
       }
       delete_initiator_instance(event->connection_id);
-      // Restart scanning for new reflector connections
-      sc = ble_peer_manager_central_create_connection();
+      // If a STOP is waiting on the link to actually drop, ack now that it has.
+      if (gate_stop_ack_pending && (count_active_reflector_connections() == 0u)) {
+        gate_stop_ack_pending = false;
+        gate_send("[APP] STOPPED\n");
+      }
+      // Only rescan if the host gate still wants CS; a STOP-triggered close
+      // must stay closed so the tag returns to AoA mode.
+      sc = gated_start_scanning();
       app_assert_status(sc);
-      cs_initiator_display_start_scanning();
-      log_info(APP_PREFIX "Scanning started for reflector connections..." NL);
       break;
 
     case BLE_PEER_MANAGER_ERROR:

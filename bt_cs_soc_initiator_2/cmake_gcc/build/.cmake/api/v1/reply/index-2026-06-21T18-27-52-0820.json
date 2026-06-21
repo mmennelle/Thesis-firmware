@@ -8,18 +8,18 @@
 		},
 		"paths" : 
 		{
-			"cmake" : "C:/Program Files/CMake/bin/cmake.exe",
-			"cpack" : "C:/Program Files/CMake/bin/cpack.exe",
-			"ctest" : "C:/Program Files/CMake/bin/ctest.exe",
-			"root" : "C:/Program Files/CMake/share/cmake-3.31"
+			"cmake" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/cmakefa35ab0687064/p/bin/cmake.exe",
+			"cpack" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/cmakefa35ab0687064/p/bin/cpack.exe",
+			"ctest" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/cmakefa35ab0687064/p/bin/ctest.exe",
+			"root" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/cmakefa35ab0687064/p/share/cmake-3.30"
 		},
 		"version" : 
 		{
 			"isDirty" : false,
 			"major" : 3,
-			"minor" : 31,
-			"patch" : 5,
-			"string" : "3.31.5",
+			"minor" : 30,
+			"patch" : 2,
+			"string" : "3.30.2",
 			"suffix" : ""
 		}
 	},
@@ -35,7 +35,7 @@
 			}
 		},
 		{
-			"jsonFile" : "cache-v2-bed3c09a8404ac041720.json",
+			"jsonFile" : "cache-v2-f2f83160bedc6f340649.json",
 			"kind" : "cache",
 			"version" : 
 			{
@@ -44,7 +44,7 @@
 			}
 		},
 		{
-			"jsonFile" : "cmakeFiles-v1-e161ac914487e306b657.json",
+			"jsonFile" : "cmakeFiles-v1-09f7f7f2c6d1a46072ff.json",
 			"kind" : "cmakeFiles",
 			"version" : 
 			{
@@ -90,7 +90,7 @@
 				"responses" : 
 				[
 					{
-						"jsonFile" : "cache-v2-bed3c09a8404ac041720.json",
+						"jsonFile" : "cache-v2-f2f83160bedc6f340649.json",
 						"kind" : "cache",
 						"version" : 
 						{
@@ -117,7 +117,7 @@
 						}
 					},
 					{
-						"jsonFile" : "cmakeFiles-v1-e161ac914487e306b657.json",
+						"jsonFile" : "cmakeFiles-v1-09f7f7f2c6d1a46072ff.json",
 						"kind" : "cmakeFiles",
 						"version" : 
 						{
