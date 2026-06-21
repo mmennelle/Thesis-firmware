@@ -50778,7 +50778,7 @@ LOAD linker stubs
  .debug_info    0x000b772d       0xe6 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/main.c.obj
  .debug_info    0x000b7813     0x283c CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/sl_gatt_service_device_information_override.c.obj
 
-.debug_abbrev   0x00000000    0x16856
+.debug_abbrev   0x00000000    0x1687a
  .debug_abbrev  0x00000000      0x3b8 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init.c.obj
  .debug_abbrev  0x000003b8       0x6d CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init_tasklets.c.obj
  .debug_abbrev  0x00000425      0x246 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_host/src/sl_bt_stack_init.c.obj
@@ -50914,16 +50914,16 @@ LOAD linker stubs
  .debug_abbrev  0x00014c7b      0x3cb CMakeFiles/slc.dir/base/c9ba7342955b16c98acbba508f875a87/platform/security/sl_component/se_manager/src/sl_se_manager_key_derivation.c.obj
  .debug_abbrev  0x00015046      0x2b1 CMakeFiles/slc.dir/base/c9ba7342955b16c98acbba508f875a87/platform/security/sl_component/se_manager/src/sl_se_manager_key_handling.c.obj
  .debug_abbrev  0x000152f7      0x1e5 CMakeFiles/slc.dir/base/c9ba7342955b16c98acbba508f875a87/platform/security/sl_component/se_manager/src/sli_se_manager_mailbox.c.obj
- .debug_abbrev  0x000154dc      0x4f5 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj
- .debug_abbrev  0x000159d1      0x105 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/gatt_db.c.obj
- .debug_abbrev  0x00015ad6      0x2a1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_bluetooth.c.obj
- .debug_abbrev  0x00015d77       0x43 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_board_default_init.c.obj
- .debug_abbrev  0x00015dba      0x156 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_event_handler.c.obj
- .debug_abbrev  0x00015f10      0x1ce CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_handles.c.obj
- .debug_abbrev  0x000160de      0x3d2 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_init_eusart_instances.c.obj
- .debug_abbrev  0x000164b0       0xda CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_power_manager_handler.c.obj
- .debug_abbrev  0x0001658a       0x79 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/main.c.obj
- .debug_abbrev  0x00016603      0x253 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/sl_gatt_service_device_information_override.c.obj
+ .debug_abbrev  0x000154dc      0x519 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj
+ .debug_abbrev  0x000159f5      0x105 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/gatt_db.c.obj
+ .debug_abbrev  0x00015afa      0x2a1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_bluetooth.c.obj
+ .debug_abbrev  0x00015d9b       0x43 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_board_default_init.c.obj
+ .debug_abbrev  0x00015dde      0x156 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_event_handler.c.obj
+ .debug_abbrev  0x00015f34      0x1ce CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_handles.c.obj
+ .debug_abbrev  0x00016102      0x3d2 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_init_eusart_instances.c.obj
+ .debug_abbrev  0x000164d4       0xda CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_power_manager_handler.c.obj
+ .debug_abbrev  0x000165ae       0x79 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/main.c.obj
+ .debug_abbrev  0x00016627      0x253 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/sl_gatt_service_device_information_override.c.obj
 
 .debug_loclists
                 0x00000000    0x2dd9f
@@ -51725,7 +51725,7 @@ LOAD linker stubs
  .debug_rnglists
                 0x00004fb4       0x14 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/sl_gatt_service_device_information_override.c.obj
 
-.debug_line     0x00000000    0x4efe3
+.debug_line     0x00000000    0x4efe4
  .debug_line    0x00000000      0x635 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init.c.obj
  .debug_line    0x00000635      0x133 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init_tasklets.c.obj
  .debug_line    0x00000768      0x3e1 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_host/src/sl_bt_stack_init.c.obj
@@ -51861,16 +51861,16 @@ LOAD linker stubs
  .debug_line    0x00047c8b     0x143f CMakeFiles/slc.dir/base/c9ba7342955b16c98acbba508f875a87/platform/security/sl_component/se_manager/src/sl_se_manager_key_derivation.c.obj
  .debug_line    0x000490ca     0x1395 CMakeFiles/slc.dir/base/c9ba7342955b16c98acbba508f875a87/platform/security/sl_component/se_manager/src/sl_se_manager_key_handling.c.obj
  .debug_line    0x0004a45f      0x4d5 CMakeFiles/slc.dir/base/c9ba7342955b16c98acbba508f875a87/platform/security/sl_component/se_manager/src/sli_se_manager_mailbox.c.obj
- .debug_line    0x0004a934     0x123c CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj
- .debug_line    0x0004bb70      0x1c3 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/gatt_db.c.obj
- .debug_line    0x0004bd33      0x6eb CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_bluetooth.c.obj
- .debug_line    0x0004c41e       0x9a CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_board_default_init.c.obj
- .debug_line    0x0004c4b8      0xff0 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_event_handler.c.obj
- .debug_line    0x0004d4a8      0x462 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_handles.c.obj
- .debug_line    0x0004d90a      0x7f2 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_init_eusart_instances.c.obj
- .debug_line    0x0004e0fc      0x477 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_power_manager_handler.c.obj
- .debug_line    0x0004e573      0x1cf CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/main.c.obj
- .debug_line    0x0004e742      0x8a1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/sl_gatt_service_device_information_override.c.obj
+ .debug_line    0x0004a934     0x123d CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj
+ .debug_line    0x0004bb71      0x1c3 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/gatt_db.c.obj
+ .debug_line    0x0004bd34      0x6eb CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_bluetooth.c.obj
+ .debug_line    0x0004c41f       0x9a CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_board_default_init.c.obj
+ .debug_line    0x0004c4b9      0xff0 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_event_handler.c.obj
+ .debug_line    0x0004d4a9      0x462 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_handles.c.obj
+ .debug_line    0x0004d90b      0x7f2 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_iostream_init_eusart_instances.c.obj
+ .debug_line    0x0004e0fd      0x477 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/autogen/sl_power_manager_handler.c.obj
+ .debug_line    0x0004e574      0x1cf CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/main.c.obj
+ .debug_line    0x0004e743      0x8a1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/sl_gatt_service_device_information_override.c.obj
 
 .debug_str      0x00000000    0x2f9ff
  .debug_str     0x00000000      0x913 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init.c.obj

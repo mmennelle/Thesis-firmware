@@ -219,3 +219,5 @@
 218	842	8037751238865292	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj	ea30037a90c81c91
 110	869	8037751237779408	CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/board_drivers/hardware/driver/icm40627/src/sl_icm40627.c.obj	7e5dcef317638258
 870	1738	8037751245381945	base/bt_aoa_soc_asset_tag_brd2606.out	55726d83ed62e87c
+40	453	8037797062449753	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag_brd2606/app.c.obj	ea30037a90c81c91
+454	1258	8037797066589088	base/bt_aoa_soc_asset_tag_brd2606.out	55726d83ed62e87c

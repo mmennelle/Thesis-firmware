@@ -50664,7 +50664,7 @@ LOAD linker stubs
                 0x000002bb       0x13 c:/users/mpmen/.silabs/slt/installs/conan/p/gcc-ab83b3403fdca6/p/bin/../lib/gcc/arm-none-eabi/12.2.1/thumb/v8-m.main+fp/hard\libc_nano.a(libc_a-strlen.o)
                                  0xef (size before relaxing)
 
-.debug_info     0x00000000    0xd6d3e
+.debug_info     0x00000000    0xd6d43
  .debug_info    0x00000000      0x660 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bgapi_protocol/bgapi_trace/src/sli_bgapi_trace.c.obj
  .debug_info    0x00000660      0x86b CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init.c.obj
  .debug_info    0x00000ecb       0x99 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init_tasklets.c.obj
@@ -50817,23 +50817,23 @@ LOAD linker stubs
  .debug_info    0x000c35fd     0x15a8 CMakeFiles/slc.dir/base/36cec12fb8bf5844b3f3d1c0a5b58023/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_key_handling.c.obj
  .debug_info    0x000c4ba5      0x3a0 CMakeFiles/slc.dir/base/36cec12fb8bf5844b3f3d1c0a5b58023/p/security_se_manager/platform/security/sl_component/se_manager/src/sli_se_manager_mailbox.c.obj
  .debug_info    0x000c4f45     0x1ddc CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/segger/systemview/SEGGER/SEGGER_RTT.c.obj
- .debug_info    0x000c6d21     0x769f CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj
- .debug_info    0x000ce3c0      0x140 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/ble_peer_manager_common.c.obj
- .debug_info    0x000ce500      0x459 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/gatt_db.c.obj
- .debug_info    0x000ce959     0x2384 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_bluetooth.c.obj
- .debug_info    0x000d0cdd       0xba CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_board_default_init.c.obj
- .debug_info    0x000d0d97      0x489 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_event_handler.c.obj
- .debug_info    0x000d1220      0x394 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_handles.c.obj
- .debug_info    0x000d15b4     0x1b2e CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_init_eusart_instances.c.obj
- .debug_info    0x000d30e2      0x204 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_power_manager_handler.c.obj
- .debug_info    0x000d32e6      0x3bd CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_button_instances.c.obj
- .debug_info    0x000d36a3      0x2e1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_led_instances.c.obj
- .debug_info    0x000d3984       0xe6 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/main.c.obj
- .debug_info    0x000d3a6a      0x78d CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/rtl_log.c.obj
- .debug_info    0x000d41f7     0x2774 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/security.c.obj
- .debug_info    0x000d696b      0x3d3 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/trace.c.obj
+ .debug_info    0x000c6d21     0x76a4 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj
+ .debug_info    0x000ce3c5      0x140 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/ble_peer_manager_common.c.obj
+ .debug_info    0x000ce505      0x459 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/gatt_db.c.obj
+ .debug_info    0x000ce95e     0x2384 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_bluetooth.c.obj
+ .debug_info    0x000d0ce2       0xba CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_board_default_init.c.obj
+ .debug_info    0x000d0d9c      0x489 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_event_handler.c.obj
+ .debug_info    0x000d1225      0x394 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_handles.c.obj
+ .debug_info    0x000d15b9     0x1b2e CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_init_eusart_instances.c.obj
+ .debug_info    0x000d30e7      0x204 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_power_manager_handler.c.obj
+ .debug_info    0x000d32eb      0x3bd CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_button_instances.c.obj
+ .debug_info    0x000d36a8      0x2e1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_led_instances.c.obj
+ .debug_info    0x000d3989       0xe6 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/main.c.obj
+ .debug_info    0x000d3a6f      0x78d CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/rtl_log.c.obj
+ .debug_info    0x000d41fc     0x2774 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/security.c.obj
+ .debug_info    0x000d6970      0x3d3 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/trace.c.obj
 
-.debug_abbrev   0x00000000    0x1a4db
+.debug_abbrev   0x00000000    0x1a4ac
  .debug_abbrev  0x00000000      0x244 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bgapi_protocol/bgapi_trace/src/sli_bgapi_trace.c.obj
  .debug_abbrev  0x00000244      0x3a0 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init.c.obj
  .debug_abbrev  0x000005e4       0x62 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/src/sl_btctrl_init_tasklets.c.obj
@@ -50986,21 +50986,21 @@ LOAD linker stubs
  .debug_abbrev  0x00018127      0x2b1 CMakeFiles/slc.dir/base/36cec12fb8bf5844b3f3d1c0a5b58023/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_key_handling.c.obj
  .debug_abbrev  0x000183d8      0x1e5 CMakeFiles/slc.dir/base/36cec12fb8bf5844b3f3d1c0a5b58023/p/security_se_manager/platform/security/sl_component/se_manager/src/sli_se_manager_mailbox.c.obj
  .debug_abbrev  0x000185bd      0x2f2 CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/segger/systemview/SEGGER/SEGGER_RTT.c.obj
- .debug_abbrev  0x000188af      0x5b8 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj
- .debug_abbrev  0x00018e67       0xdf CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/ble_peer_manager_common.c.obj
- .debug_abbrev  0x00018f46      0x105 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/gatt_db.c.obj
- .debug_abbrev  0x0001904b      0x2a1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_bluetooth.c.obj
- .debug_abbrev  0x000192ec       0x82 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_board_default_init.c.obj
- .debug_abbrev  0x0001936e      0x156 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_event_handler.c.obj
- .debug_abbrev  0x000194c4      0x1ce CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_handles.c.obj
- .debug_abbrev  0x00019692      0x3d2 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_init_eusart_instances.c.obj
- .debug_abbrev  0x00019a64       0xda CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_power_manager_handler.c.obj
- .debug_abbrev  0x00019b3e      0x182 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_button_instances.c.obj
- .debug_abbrev  0x00019cc0      0x14d CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_led_instances.c.obj
- .debug_abbrev  0x00019e0d       0x79 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/main.c.obj
- .debug_abbrev  0x00019e86      0x255 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/rtl_log.c.obj
- .debug_abbrev  0x0001a0db      0x2b6 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/security.c.obj
- .debug_abbrev  0x0001a391      0x14a CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/trace.c.obj
+ .debug_abbrev  0x000188af      0x589 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj
+ .debug_abbrev  0x00018e38       0xdf CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/ble_peer_manager_common.c.obj
+ .debug_abbrev  0x00018f17      0x105 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/gatt_db.c.obj
+ .debug_abbrev  0x0001901c      0x2a1 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_bluetooth.c.obj
+ .debug_abbrev  0x000192bd       0x82 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_board_default_init.c.obj
+ .debug_abbrev  0x0001933f      0x156 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_event_handler.c.obj
+ .debug_abbrev  0x00019495      0x1ce CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_handles.c.obj
+ .debug_abbrev  0x00019663      0x3d2 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_iostream_init_eusart_instances.c.obj
+ .debug_abbrev  0x00019a35       0xda CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_power_manager_handler.c.obj
+ .debug_abbrev  0x00019b0f      0x182 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_button_instances.c.obj
+ .debug_abbrev  0x00019c91      0x14d CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_simple_led_instances.c.obj
+ .debug_abbrev  0x00019dde       0x79 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/main.c.obj
+ .debug_abbrev  0x00019e57      0x255 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/rtl_log.c.obj
+ .debug_abbrev  0x0001a0ac      0x2b6 CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/security.c.obj
+ .debug_abbrev  0x0001a362      0x14a CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/trace.c.obj
 
 .debug_loclists
                 0x00000000    0x35ab6
