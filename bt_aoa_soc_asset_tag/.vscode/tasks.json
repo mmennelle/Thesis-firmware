@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "bt_aoa_soc_asset_tag_silabs_debug:default_config_setup",
+            "type": "shell",
+            "command": "C:/Users/mpmen/.silabs/slt/installs/conan/p/cmakefa35ab0687064/p/bin/cmake.exe --preset project",
+            "options": {
+                "cwd": "c:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc"
+            }
+        },
+        {
+            "label": "bt_aoa_soc_asset_tag_silabs_debug:default_config_build",
+            "type": "shell",
+            "command": "C:/Users/mpmen/.silabs/slt/installs/conan/p/cmakefa35ab0687064/p/bin/cmake.exe --build --preset default_config",
+            "options": {
+                "cwd": "c:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc"
+            }
+        },
+        {
+            "label": "bt_aoa_soc_asset_tag_silabs_debug:default_config_flash",
+            "type": "shell",
+            "command": "C:/Users/mpmen/.silabs/slt/installs/archive/Simplicity Commander/commander.exe",
+            "args": [
+                "flash",
+                "c:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/build/base/bt_aoa_soc_asset_tag.hex",
+                "--serialno",
+                "440350158"
+            ]
+        },
+        {
+            "label": "bt_aoa_soc_asset_tag_silabs_debug:default_config_combined",
+            "dependsOrder": "sequence",
+            "presentation": {
+                "reveal": "never"
+            },
+            "dependsOn": [
+                "bt_aoa_soc_asset_tag_silabs_debug:default_config_setup",
+                "bt_aoa_soc_asset_tag_silabs_debug:default_config_build",
+                "bt_aoa_soc_asset_tag_silabs_debug:default_config_flash"
+            ]
+        }
+    ]
+}

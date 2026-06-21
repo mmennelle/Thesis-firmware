@@ -1,0 +1,163 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: bt_cs_soc_reflector_brd2606
+label: bt_cs_soc_reflector_brd2606
+description: |
+  Channel Sounding (CS) Reflector for Bluetooth LE. This example sends measurement results back to the CS Initiator device via the CS Ranging Service. The CS Reflector has to connect to at least one CS Initiator device to start the measurement. It can connect to a maximum of four CS Initiators at a time. The application starts advertising after boot and keeps advertising until every connection slots are occupied. If a connection slot becomes free, the device will start advertising again.
+category: Bluetooth Examples
+filter:
+- name: Device Type
+  value:
+  - SoC
+- name: Project Difficulty
+  value:
+  - Beginner
+- name: Wireless Technology
+  value:
+  - Bluetooth
+package: bluetooth_le_app
+quality: production
+readme:
+- path: readme.md
+source:
+- path: app.c
+- path: security.c
+tag:
+- hwfilter:board:hardware_board_has_hfxo_freq_40mhz
+- hwfilter:device:device_generic_family_efr32xg24
+- prebuilt_demo
+- hwfilter:device:device_supports_bluetooth
+- toolchain:gcc
+include:
+- path: .
+  file_list:
+  - path: app.h
+  - path: security.h
+sdk:
+  vendor: silabs
+  id: simplicity_sdk
+  version: 2025.12.3
+toolchain_settings: [
+  ]
+component:
+- package: simplicity_sdk
+  vendor: silabs
+  id: EFR32MG24B210F1536IM48
+- package: simplicity_sdk
+  vendor: silabs
+  id: app_assert
+- package: simplicity_sdk
+  vendor: silabs
+  id: app_log
+- package: simplicity_sdk
+  vendor: silabs
+  id: ble_peer_manager_common
+- package: simplicity_sdk
+  vendor: silabs
+  id: ble_peer_manager_peripheral
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_connection_role_peripheral
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_extended_scanner
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt_server
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_legacy_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_sm
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_system
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_stack
+- package: simplicity_sdk
+  vendor: silabs
+  id: brd2606a
+- package: simplicity_sdk
+  vendor: silabs
+  id: clock_manager
+- package: simplicity_sdk
+  vendor: silabs
+  id: cs_antenna
+- package: simplicity_sdk
+  vendor: silabs
+  id: cs_reflector
+- package: simplicity_sdk
+  vendor: silabs
+  id: device_init
+- package: simplicity_sdk
+  vendor: silabs
+  id: gatt_configuration
+- package: simplicity_sdk
+  vendor: silabs
+  id: gatt_service_device_information_override
+- package: simplicity_sdk
+  vendor: silabs
+  id: mpu
+- package: simplicity_sdk
+  instance:
+  - btn0
+  - btn1
+  vendor: silabs
+  id: simple_button
+- package: simplicity_sdk
+  vendor: silabs
+  id: sl_main
+- package: simplicity_sdk
+  vendor: silabs
+  id: toolchain_gcc
+config_file:
+- path: config/app_config.h
+template_contribution:
+- name: ble_peer_manager_event_handler
+  priority: 0
+  value:
+    include: app.h
+    handler: ble_peer_manager_on_event_reflector
+configuration:
+- name: SL_STACK_SIZE
+  value: '2752'
+- name: SL_BT_CONFIG_BUFFER_SIZE
+  value: '30000'
+- name: SL_BT_CONFIG_MAX_CS_PROCEDURES
+  value: '4'
+- name: SL_BT_CONTROLLER_CONN_EVENT_LENGTH_EXTENSION
+  value: '1'
+- condition:
+  - psa_crypto
+  name: SL_PSA_KEY_USER_SLOT_COUNT
+  value: '0'
+- unless:
+  - hardware_board
+  name: SL_CLOCK_MANAGER_HFXO_FREQ
+  value: '40000000'
+- unless:
+  - cli
+  name: SL_IOSTREAM_USART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+  value: '0'
+- unless:
+  - cli
+  name: SL_IOSTREAM_EUSART_VCOM_RESTRICT_ENERGY_MODE_TO_ALLOW_RECEPTION
+  value: '0'
+- name: SL_BOARD_ENABLE_VCOM
+  value: '1'
+- name: CS_REFLECTOR_ANTENNA_OFFSET
+  value: '0'
+- name: BLE_PEER_MANAGER_PERIPHERAL_CONFIG_ADV_PHY
+  value: sl_bt_gap_phy_2m
+- name: APP_LOG_LEVEL_FILTER_THRESHOLD
+  value: APP_LOG_LEVEL_INFO
+ui_hints:
+  highlight:
+  - path: config/btconf/gatt_configuration.btconf
+  - path: readme.md
+    focus: true
+

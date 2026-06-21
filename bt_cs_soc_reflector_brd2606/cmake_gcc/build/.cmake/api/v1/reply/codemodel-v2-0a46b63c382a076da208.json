@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-base-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.25"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "base",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "bt_cs_soc_reflector_brd2606",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "bt_cs_soc_reflector_brd2606::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-bt_cs_soc_reflector_brd2606-base-355682825c87de56730b.json",
+					"name" : "bt_cs_soc_reflector_brd2606",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "slc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-slc-base-56e41f617d1b17783c53.json",
+					"name" : "slc",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_reflector_brd2606/cmake_gcc/build",
+		"source" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_reflector_brd2606/cmake_gcc"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

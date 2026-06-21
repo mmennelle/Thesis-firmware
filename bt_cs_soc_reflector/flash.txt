@@ -1,0 +1,1 @@
+&"C:\Users\mpmen\.silabs\slt\installs\archive\Simplicity Commander\commander.exe" flash "c:\Users\mpmen\SimplicityStudio\BLE-thesis\bt_cs_soc_reflector\cmake_gcc\build\base\bt_cs_soc_reflector.hex" --ip 192.168.8.212 --device EFR32MG24B210F1536IM48

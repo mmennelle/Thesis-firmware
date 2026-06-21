@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "bt_aoa_soc_asset_tag_silabs_debug:default_config",
+            "cwd": "${workspaceFolder}",
+            "type": "cortex-debug",
+            "request": "launch",
+            "serverpath": "C:\\Users\\mpmen\\.silabs\\slt\\installs\\archive\\exx32-v6.0.32\\JLinkGDBServerCL.exe",
+            "servertype": "jlink",
+            "gdbPath": "C:\\Users\\mpmen\\.silabs\\slt\\installs\\archive\\exx32-v6.0.32\\arm-none-eabi-gdb.exe",
+            "device": "EFR32BG22CxxxF512",
+            "svdFile": "C:\\Users\\mpmen\\AppData\\Local\\Temp\\silabs_extension\\silabs_extension\\svd\\EFR32BG22C224F512IM40.svd",
+            "runToEntryPoint": "main",
+            "rtos": "FreeRTOS",
+            "showDevDebugOutput": "raw",
+            "executable": "c:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/build/base/bt_aoa_soc_asset_tag.out",
+            "preLaunchTask": "bt_aoa_soc_asset_tag_silabs_debug:default_config_combined",
+            "serialNumber": "440350158",
+            "breakAfterReset": true,
+            "overrideLaunchCommands": [
+                "exec-file c:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/build/base/bt_aoa_soc_asset_tag.out",
+                "symbol-file c:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/build/base/bt_aoa_soc_asset_tag.out"
+            ],
+            "overrideResetCommands": [
+                "monitor reset",
+                "set $pc = __Vectors[1]",
+                "set $sp = __Vectors[0]"
+            ]
+        }
+    ]
+}

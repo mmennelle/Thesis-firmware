@@ -1,0 +1,4 @@
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/build/CMakeFiles/slc.dir
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/build/CMakeFiles/bt_cs_soc_initiator_2.dir
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/build/CMakeFiles/edit_cache.dir
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/build/CMakeFiles/rebuild_cache.dir

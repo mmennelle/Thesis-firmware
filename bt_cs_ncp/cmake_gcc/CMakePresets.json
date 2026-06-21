@@ -1,0 +1,38 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+      "major": 3,
+      "minor": 25,
+      "patch": 0
+    },
+    "configurePresets": [
+      {
+        "name": "project",
+        "displayName": "Configure bt_cs_ncp",
+        "generator": "Ninja Multi-Config",
+        "binaryDir": "${sourceDir}/build",
+        "toolchainFile": "${sourceDir}/toolchain.cmake",
+        "cacheVariables": {
+          "CMAKE_CONFIGURATION_TYPES": "base"
+        }
+      }
+    ],
+    "buildPresets": [
+      {
+        "name": "default_config",
+        "displayName": "Build bt_cs_ncp",
+        "configurePreset": "project",
+        "configuration": "base",
+        "targets": ["bt_cs_ncp"]
+      }
+    ],
+    "workflowPresets": [
+      {
+        "name": "project",
+        "steps": [
+          {"type": "configure", "name": "project"},
+          {"type": "build", "name": "default_config"}
+        ]
+      }
+    ]
+  }

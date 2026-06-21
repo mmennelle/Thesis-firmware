@@ -1,0 +1,32 @@
+{
+    "folders": [
+        {
+            "path": "..\\BLE-thesis\\bt_aoa_soc_asset_tag_brd2606"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_ncp"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_cs_soc_reflector"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_cs_soc_initiator"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_cs_ncp"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_cs_soc_initiator_2"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_cs_soc_reflector_brd2606"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_aoa_soc_asset_tag"
+        },
+        {
+            "path": "..\\BLE-thesis\\bt_aoa_ncp_locator"
+        }
+    ],
+    "siWorkspaceRoot": "C:\\Users\\mpmen\\SimplicityStudio\\BLE-thesis"
+}

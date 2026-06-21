@@ -1,0 +1,149 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: bt_ncp
+label: bt_ncp
+description: |
+  Network Co-Processor (NCP) target application. Runs the Bluetooth stack dynamically and provides access to it via Bluetooth API (BGAPI) using UART connection. NCP mode makes it possible to run your application on a host controller or PC.
+category: Bluetooth Examples
+filter:
+- name: Device Type
+  value:
+  - NCP
+- name: Project Difficulty
+  value:
+  - Beginner
+- name: Wireless Technology
+  value:
+  - Bluetooth
+package: bluetooth_le_app
+quality: production
+readme:
+- path: readme.md
+source:
+- path: app.c
+tag:
+- prebuilt_demo
+- hwfilter:device:device_supports_bluetooth
+- hwfilter:device:device_series_2
+include:
+- path: .
+  file_list:
+  - path: app.h
+sdk:
+  vendor: silabs
+  id: simplicity_sdk
+  version: 2025.12.1
+toolchain_settings: [
+  ]
+component:
+- package: simplicity_sdk
+  vendor: silabs
+  id: EFR32BG22C224F512IM40
+- package: simplicity_sdk
+  vendor: silabs
+  id: app_assert
+- package: simplicity_sdk
+  vendor: silabs
+  id: app_os_helper
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_connection_role_central
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_connection_role_peripheral
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_dynamic_gattdb
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_extended_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_extended_scanner
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gap
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt_server
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_legacy_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_legacy_scanner
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_nvm
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_periodic_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_sm
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_sync
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_system
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_test
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_stack
+- package: simplicity_sdk
+  vendor: silabs
+  id: brd4191a
+- package: simplicity_sdk
+  vendor: silabs
+  id: clock_manager
+- package: simplicity_sdk
+  vendor: silabs
+  id: device_init
+- package: simplicity_sdk
+  vendor: silabs
+  id: mpu
+- package: simplicity_sdk
+  vendor: silabs
+  id: ncp
+- package: simplicity_sdk
+  vendor: silabs
+  id: ncp_user_cmd
+- package: simplicity_sdk
+  vendor: silabs
+  id: sl_main
+- package: simplicity_sdk
+  instance:
+  - vcom
+  vendor: silabs
+  id: uartdrv_usart
+other_file:
+- path: image/readme_img0.png
+- path: image/readme_img1.png
+- path: image/readme_img2.png
+- path: image/readme_img3.png
+- path: image/readme_img4.png
+- path: image/readme_img5.png
+- path: image/readme_img7.png
+configuration:
+- name: SL_STACK_SIZE
+  value: '2752'
+- name: SL_BT_CONFIG_USER_ADVERTISERS
+  value: '4'
+- name: SL_BOARD_ENABLE_VCOM
+  value: '1'
+- name: SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE
+  value: uartdrvFlowControlHw
+- condition:
+  - psa_crypto
+  name: SL_PSA_KEY_USER_SLOT_COUNT
+  value: '0'
+ui_hints:
+  highlight:
+  - path: readme.md
+    focus: true
+

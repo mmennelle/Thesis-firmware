@@ -1,0 +1,4 @@
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_ncp_locator/cmake_gcc/build/CMakeFiles/slc.dir
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_ncp_locator/cmake_gcc/build/CMakeFiles/bt_aoa_ncp_locator.dir
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_ncp_locator/cmake_gcc/build/CMakeFiles/edit_cache.dir
+C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_ncp_locator/cmake_gcc/build/CMakeFiles/rebuild_cache.dir

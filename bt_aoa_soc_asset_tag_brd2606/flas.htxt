@@ -1,0 +1,11 @@
+# Initiator (brd4198a)
+cd C:\Users\mpmen\SimplicityStudio\BLE-thesis\bt_cs_soc_initiator_2\cmake_gcc
+Remove-Item .\build\**\*cs_initiator*.obj -Recurse -Force -ErrorAction SilentlyContinue
+cmake --build --preset default_config
+& "C:\Users\mpmen\.silabs\slt\installs\archive\Simplicity Commander\commander.exe" flash .\build\base\bt_cs_soc_initiator_2.hex --ip 192.168.8.212 --device EFR32MG24B210F1536IM48
+
+# Reflector (brd2606 asset tag) — rebuild fresh too
+cd C:\Users\mpmen\SimplicityStudio\BLE-thesis\bt_aoa_soc_asset_tag_brd2606\cmake_gcc
+Remove-Item .\build\**\*cs_reflector*.obj -Recurse -Force -ErrorAction SilentlyContinue
+cmake --build --preset default_config
+& "C:\Users\mpmen\.silabs\slt\installs\archive\Simplicity Commander\commander.exe" flash .\build\base\bt_aoa_soc_asset_tag_brd2606.hex --serialno <tag-serial>

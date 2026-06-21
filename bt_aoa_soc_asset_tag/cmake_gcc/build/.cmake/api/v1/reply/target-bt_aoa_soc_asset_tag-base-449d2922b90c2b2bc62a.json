@@ -1,0 +1,2067 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "base/bt_aoa_soc_asset_tag.out"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_libraries",
+			"include",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt",
+			"bt_aoa_soc_asset_tag.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 15,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 51,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 13,
+				"parent" : 0
+			},
+			{
+				"file" : 1,
+				"parent" : 3
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 294,
+				"parent" : 4
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 22,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-std=c17"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-mcpu=cortex-m33"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-mthumb"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-mfpu=fpv5-sp-d16"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-mfloat-abi=hard"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-mcmse"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-Wall"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-Wextra"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-Os"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-fdata-sections"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-ffunction-sections"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-fomit-frame-pointer"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-g"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "--specs=nano.specs"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-fno-lto"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "CMSIS_NVIC_VIRTUAL=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "CMSIS_NVIC_VIRTUAL_HEADER_FILE=\"cmsis_nvic_virtual.h\""
+				},
+				{
+					"backtrace" : 2,
+					"define" : "EFR32BG22C224F512IM40=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "HARDWARE_BOARD_DEFAULT_RF_BAND_2400=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "HARDWARE_BOARD_SUPPORTS_1_RF_BAND=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "HARDWARE_BOARD_SUPPORTS_RF_BAND_2400=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "HFXO_FREQ=38400000"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "MBEDTLS_CONFIG_FILE=<sl_mbedtls_config.h>"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "MBEDTLS_PSA_CRYPTO_CONFIG_FILE=<psa_crypto_config.h>"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SLI_RADIOAES_REQUIRES_MASKING=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_BOARD_NAME=\"BRD4191A\""
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_BOARD_REV=\"A03\""
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_CLOCK_MANAGER=clock_manager"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_CORE=core"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_DEVICE_PERIPHERAL=device_peripheral"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_GPIO=gpio"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_HAL_COMMON=hal_common"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_HAL_GPIO=hal_gpio"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_INTERRUPT_MANAGER=interrupt_manager"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_MEMORY_MANAGER=memory_manager"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_POWER_MANAGER=power_manager"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_PSEC_OSAL=psec_osal"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_SE_MANAGER=se_manager"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_SLEEPTIMER=sleeptimer"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_SLI_CRYPTO=sli_crypto"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_SLI_PROTOCOL_CRYPTO=sli_protocol_crypto"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_CODE_COMPONENT_SYSTEM=system"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_COMPONENT_CATALOG_PRESENT=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_RAIL_LIB_MULTIPROTOCOL_SUPPORT=0"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_RAIL_UTIL_PA_CONFIG_HEADER=<sl_rail_util_pa_config.h>"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_RAIL_UTIL_PA_PLUGIN_HEADER=<sl_rail_util_pa_conversions.h>"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SL_RAIL_UTIL_PA_TABLES_CONFIG_HEADER=<sl_rail_util_pa_tables_config.h>"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 6,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/.."
+				},
+				{
+					"backtrace" : 6,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/../third_party/mpu6050/src"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/../third_party/mpu6050/interface"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/../third_party/mpu6050/example"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/../config"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/../config/btconf"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/../autogen"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/devices/platform/Device/SiliconLabs/EFR32BG22/Include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_common_apps/app/common/util/app_assert"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_common/platform/common/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bgapi_protocol/protocol/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_common/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_controller/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/boards/hardware/board/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/clock_manager/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/clock_manager/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/cmsis/Core/Include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/hardware/driver/configuration_over_swo/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/driver/debug/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/device_manager/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/device_init/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/common/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/common/errno_error_codes/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_middleware/common/gatt_service_cte"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_middleware/common/gatt_service_cte_adv"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_middleware/common/gatt_service_device_information_override"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/driver/gpio/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/peripheral/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/interrupt_manager/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/interrupt_manager/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/interrupt_manager/inc/arm"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/platform/silicon_labs"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/config"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/config/preset"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/memory_manager/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/memory_manager/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/memory_manager/profiler/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/mpu/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/config"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/power_manager/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/power_manager/src/common"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/power_manager/src/sleep_loop"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/common"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/protocol/ble"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/protocol/ieee802154"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/protocol/wmbus"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/protocol/zwave"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/chip/efr32/efr32xg2x"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/protocol/sidewalk"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_se_manager/platform/security/sl_component/se_manager/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/common/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sl_main/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sl_main/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_compatible_pa"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_pa_conversions"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_pa_tables"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_pa_tables/efr32xg22"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_power_manager_init"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_pti"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sleeptimer/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sleeptimer/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls/platform/security/sl_component/sli_crypto/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls/platform/security/sl_component/sl_protocol_crypto/src"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_se_manager/platform/security/sl_component/sli_psec_osal/inc"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/udelay/inc"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "slc::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "bt_aoa_soc_asset_tag::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-mcpu=cortex-m33",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-mthumb",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-mfpu=fpv5-sp-d16",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-mfloat-abi=hard",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-TC:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/../autogen/linkerfile.ld",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "--specs=nano.specs",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Xlinker",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Map=C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/cmake_gcc/build/base/bt_aoa_soc_asset_tag.map",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Wl,--wrap=_free_r",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Wl,--wrap=_malloc_r",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Wl,--wrap=_calloc_r",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Wl,--wrap=_realloc_r",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-fno-lto",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-Wl,--gc-sections",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-Wl,--start-group",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-lgcc",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-lc",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-lm",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-lnosys",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bgapi_protocol\\build\\gcc\\cortex-m33\\bgapi_trace\\release\\libbgapi_trace_stub.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bgapi_protocol\\build\\gcc\\cortex-m33\\protocol\\command\\release\\libbgapi_command.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bgapi_protocol\\build\\gcc\\cortex-m33\\protocol\\core\\release\\libbgapi_core.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bgapi_protocol\\build\\gcc\\cortex-m33\\protocol\\device\\release\\libbgapi_device.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bgapi_protocol\\build\\gcc\\cortex-m33\\protocol\\event\\release\\libbgapi_event.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bgapi_protocol\\build\\gcc\\cortex-m33\\protocol\\release\\libbgapi_protocol.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bgapi_protocol\\build\\gcc\\cortex-m33\\rtos_adaptation\\release\\libbgapi_protocol_rtos_adaptation_stub.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_common\\lib\\build\\gcc\\cortex-m33\\bgcommon\\release\\libbgcommon.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_controller\\build\\gcc\\xg22\\release\\liblinklayer.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\bgstack\\release\\libbondingdb.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\ble_bgapi\\release\\libble_bgapi_gatt_client.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\ble_bgapi\\release\\libble_bgapi_gatt_server.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\accept_list\\release\\libble_host_accept_list_stub.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\bgstack\\release\\libble_host.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\ble_bgapi\\release\\libble_bgapi.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\ble_system\\release\\libble_system.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\connection_subrating\\release\\libble_host_connection_subrating_stub.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\core\\release\\libble_host_core.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\cte_transmitter\\release\\libble_host_cte_transmitter.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\hal\\release\\libble_host_hal_series2.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\hci\\release\\libble_host_hci.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\bluetooth_le_host\\build\\gcc\\cortex-m33\\system\\release\\libble_host_system.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "C:\\Users\\mpmen\\.silabs\\slt\\installs\\conan\\p\\simpl1a11563c2e399\\p\\rail_library\\autogen\\librail_release\\librail_efr32xg22_gcc_release.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "-Wl,--end-group",
+				"role" : "libraries"
+			}
+		],
+		"language" : "C"
+	},
+	"name" : "bt_aoa_soc_asset_tag",
+	"nameOnDisk" : "bt_aoa_soc_asset_tag.out",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		},
+		{
+			"name" : "Object Libraries",
+			"sourceIndexes" : 
+			[
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68,
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81,
+				82,
+				83,
+				84,
+				85,
+				86,
+				87,
+				88,
+				89,
+				90,
+				91,
+				92,
+				93,
+				94,
+				95,
+				96,
+				97,
+				98,
+				99,
+				100,
+				101,
+				102,
+				103,
+				104,
+				105,
+				106,
+				107,
+				108,
+				109,
+				110,
+				111,
+				112,
+				113,
+				114,
+				115,
+				116,
+				117,
+				118,
+				119,
+				120,
+				121,
+				122,
+				123,
+				124,
+				125,
+				126,
+				127,
+				128,
+				129,
+				130,
+				131,
+				132,
+				133,
+				134,
+				135,
+				136,
+				137,
+				138,
+				139,
+				140,
+				141,
+				142,
+				143,
+				144,
+				145,
+				146,
+				147,
+				148,
+				149,
+				150,
+				151,
+				152,
+				153,
+				154,
+				155,
+				156,
+				157,
+				158,
+				159,
+				160,
+				161,
+				162,
+				163,
+				164,
+				165,
+				166,
+				167,
+				168,
+				169,
+				170,
+				171,
+				172,
+				173,
+				174,
+				175,
+				176
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/mpu6050_glue.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/third_party/mpu6050/src/driver_mpu6050.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/third_party/mpu6050/example/driver_mpu6050_dmp.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_common/src/sli_bgcommon_debug_efr32.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_controller/src/sl_btctrl_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_controller/src/sl_btctrl_init_tasklets.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sl_bt_stack_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_accept_list_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_advertiser_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_connection_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_dynamic_gattdb_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_external_bondingdb_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_hci_event_table.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_host_adaptation.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_l2cap_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_pawr_advertiser_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_periodic_advertiser_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/bluetooth_le_host/src/sli_bt_sync_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/bluetooth_le_middleware/common/gatt_service_cte/sl_gatt_service_cte.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/bluetooth_le_middleware/common/gatt_service_cte_adv/sl_gatt_service_cte_adv.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/bluetooth_le_middleware/common/gatt_service_cte_adv/sl_gatt_service_cte_silabs.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/boards/hardware/board/src/sl_board_control_gpio.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/boards/hardware/board/src/sl_board_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/devices/platform/Device/SiliconLabs/EFR32BG22/Source/startup_efr32bg22.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/devices/platform/Device/SiliconLabs/EFR32BG22/Source/system_efr32bg22.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_common/platform/common/src/sl_assert.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_common/platform/common/src/sl_slist.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_common/platform/common/src/sl_syscalls.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/hardware/driver/configuration_over_swo/src/sl_cos.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/common/src/sl_core_cortexm.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/driver/debug/src/sl_debug_swo.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/driver/gpio/src/sl_gpio.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3_cache.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/3a98b3dd197b23a7791374813af78d40/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3_default_common_linker.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3_hal_flash.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3_lock.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3_object.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3_page.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emdrv/nvm3/src/nvm3_utils.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_burtc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_cmu.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_emu.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_gpio.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_i2c.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_iadc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_msc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_prs.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_rtcc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_system.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/emlib/src/em_timer.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/peripheral/src/sl_hal_gpio.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/peripheral/src/sl_hal_syscfg.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/peripheral/src/sl_hal_system.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/3a98b3dd197b23a7791374813af78d40/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/clock_manager/src/sl_clock_manager.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/clock_manager/src/sl_clock_manager_hal_s2.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/clock_manager/src/sl_clock_manager_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/clock_manager/src/sl_clock_manager_init_hal_s2.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/device_init/src/sl_device_init_dcdc_s2.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/device_manager/clocks/sl_device_clock_efr32xg22.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/device_manager/devices/sl_device_peripheral_hal_efr32xg22.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/3a98b3dd197b23a7791374813af78d40/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/device_manager/dma/sl_device_dma_s2.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/3a98b3dd197b23a7791374813af78d40/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/device_manager/src/sl_device_clock.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/device_manager/src/sl_device_dma.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/3a98b3dd197b23a7791374813af78d40/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/device_manager/src/sl_device_gpio.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/device_manager/src/sl_device_peripheral.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/interrupt_manager/src/sl_interrupt_manager_cortexm.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/memory_manager/profiler/src/sli_memory_profiler_stubs.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/memory_manager/src/sl_memory_manager.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/memory_manager/src/sl_memory_manager_dynamic_reservation.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/memory_manager/src/sl_memory_manager_pool.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/memory_manager/src/sl_memory_manager_pool_common.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/dcbca0b087c6ef8085f057c16a6319b8/simpl1a11563c2e399/p/platform_core/platform/service/memory_manager/src/sl_memory_manager_region.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/memory_manager/src/sl_memory_manager_retarget.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/memory_manager/src/sli_memory_manager_common.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/mpu/src/sl_mpu_s2.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/power_manager/src/common/sl_power_manager_common.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/power_manager/src/common/sl_power_manager_em4.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/power_manager/src/sleep_loop/sl_power_manager.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/power_manager/src/sleep_loop/sl_power_manager_debug.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/platform_core/platform/service/power_manager/src/sleep_loop/sl_power_manager_hal_s2.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sl_main/src/sl_main_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sl_main/src/sl_main_init_memory.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/3a98b3dd197b23a7791374813af78d40/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sl_main/src/sl_main_process_action.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/sleeptimer/src/sl_sleeptimer.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/sleeptimer/src/sl_sleeptimer_hal_burtc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/sleeptimer/src/sl_sleeptimer_hal_prortc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/platform_core/platform/service/sleeptimer/src/sl_sleeptimer_hal_timer.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/udelay/src/sl_udelay.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/platform_core/platform/service/udelay/src/sl_udelay_armv6m_gcc.S.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/rail_library/plugin/sl_rail_util_pa_conversions/sl_rail_util_pa_conversions.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_pa_conversions/sl_rail_util_pa_tables.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/rail_library/plugin/sl_rail_util_power_manager_init/sl_rail_util_power_manager_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/rail_library/plugin/sl_rail_util_pti/sl_rail_util_pti.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/ba414ep_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/ba431_config.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/cryptodma_internal.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/cryptolib_types.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/3a98b3dd197b23a7791374813af78d40/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/platform/silicon_labs/sli_libcryptosoc.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_aes.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_blk_cipher.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_dh_alg.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_ecc_curves.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_ecc_keygen_alg.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_ecdsa_alg.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_hash.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_math.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_memcmp.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_memcpy.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_primitives.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_rng.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_libcryptosoc/src/sx_trng.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/cryptoacc_aes.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/cryptoacc_gcm.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/mbedtls_ccm.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/mbedtls_cmac.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/mbedtls_ecdsa_ecdh.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/sl_mbedtls.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/sl_psa_crypto.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_mbedtls_support/src/sli_psa_crypto.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/1cb6a307ad43a201e0484b8459123b6a/platform/security/sl_component/sl_protocol_crypto/src/sli_protocol_crypto_radioaes.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/24e5176780f6f9b28f2ea1f63b3bace5/security_mbedtls/platform/security/sl_component/sl_protocol_crypto/src/sli_radioaes_management.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/src/cryptoacc_management.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/src/sl_psa_its_nvm3.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_driver_trng.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/1cb6a307ad43a201e0484b8459123b6a/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_aead.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/1cb6a307ad43a201e0484b8459123b6a/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_cipher.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/1cb6a307ad43a201e0484b8459123b6a/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_hash.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/5c85ed51daa7f5e3caa90d304b426762/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_key_derivation.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/5c85ed51daa7f5e3caa90d304b426762/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_key_management.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/1cb6a307ad43a201e0484b8459123b6a/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_mac.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/1cb6a307ad43a201e0484b8459123b6a/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_signature.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/src/sli_psa_driver_common.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/src/sli_psa_driver_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/src/sli_psa_trng.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sl_psa_driver/src/sli_se_version_dependencies.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_mbedtls/platform/security/sl_component/sli_crypto/src/sl_crypto_s2.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/cipher.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/cipher_wrap.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/constant_time.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/platform.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/platform_util.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_aead.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_cipher.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_client.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/074b9ac82f8dfda27e7a2b2545e5caf3/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_driver_wrappers_no_static.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_ecp.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_ffdh.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_hash.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_mac.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_pake.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_rsa.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_se.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_slot_management.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_crypto_storage.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/psa_util.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/.silabs/slt/installs/conan/p/simpl1a11563c2e399/p/security_mbedtls_source/library/threading.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_attestation.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_cipher.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_entropy.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_hash.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/24e5176780f6f9b28f2ea1f63b3bace5/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_key_derivation.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_key_handling.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_signature.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sl_se_manager_util.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/71a9b9885f04aa646d61ecca1b0139ae/p/security_se_manager/platform/security/sl_component/se_manager/src/sli_se_manager_mailbox.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/app.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/autogen/gatt_db.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/autogen/sl_bluetooth.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/autogen/sl_board_default_init.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/autogen/sl_event_handler.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/autogen/sl_power_manager_handler.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/main.c.obj",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 2,
+			"isGenerated" : true,
+			"path" : "build/CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_aoa_soc_asset_tag/sl_gatt_service_device_information_override.c.obj",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "EXECUTABLE"
+}

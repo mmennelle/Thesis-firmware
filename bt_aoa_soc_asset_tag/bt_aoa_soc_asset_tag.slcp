@@ -1,0 +1,114 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: bt_aoa_soc_asset_tag
+label: bt_aoa_soc_asset_tag
+description: |
+  This sample app demonstrates a CTE (Constant Tone Extension) transmitter that can be used as an asset tag in a Direction Finding setup estimating Angle of Arrival (AoA).
+category: Bluetooth AoX Examples
+filter:
+- name: Device Type
+  value:
+  - SoC
+- name: Project Difficulty
+  value:
+  - Advanced
+- name: Wireless Technology
+  value:
+  - Bluetooth
+package: bluetooth_le_app
+quality: production
+readme:
+- path: readme.md
+source:
+- path: app.c
+tag:
+- prebuilt_demo
+- hwfilter:device:device_supports_bluetooth
+- hwfilter:device:device_series_2
+- hwfilter:device:device_supports_bluetooth_cte
+sdk:
+  vendor: silabs
+  id: simplicity_sdk
+  version: 2025.12.1
+toolchain_settings: [
+  ]
+component:
+- package: simplicity_sdk
+  vendor: silabs
+  id: EFR32BG22C224F512IM40
+- package: simplicity_sdk
+  vendor: silabs
+  id: app_assert
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_aoa_transmitter
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_connection_role_peripheral
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt_server
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_legacy_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_sm
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_system
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_stack
+- package: simplicity_sdk
+  vendor: silabs
+  id: brd4002a
+- package: simplicity_sdk
+  vendor: silabs
+  id: brd4191a
+- package: simplicity_sdk
+  vendor: silabs
+  id: clock_manager
+- package: simplicity_sdk
+  vendor: silabs
+  id: device_init
+- package: simplicity_sdk
+  vendor: silabs
+  id: gatt_configuration
+- package: simplicity_sdk
+  vendor: silabs
+  id: gatt_service_cte
+- package: simplicity_sdk
+  vendor: silabs
+  id: gatt_service_cte_silabs
+- package: simplicity_sdk
+  vendor: silabs
+  id: gatt_service_device_information_override
+- package: simplicity_sdk
+  vendor: silabs
+  id: mpu
+- package: simplicity_sdk
+  vendor: silabs
+  id: rail_util_pti
+- package: simplicity_sdk
+  vendor: silabs
+  id: sl_main
+other_file:
+- path: image/readme_img0.png
+- path: image/readme_img1.png
+- path: image/readme_img2.png
+configuration:
+- name: SL_STACK_SIZE
+  value: '2752'
+- condition:
+  - psa_crypto
+  name: SL_PSA_KEY_USER_SLOT_COUNT
+  value: '0'
+ui_hints:
+  highlight:
+  - path: config/btconf/gatt_configuration.btconf
+  - path: readme.md
+    focus: true
+
