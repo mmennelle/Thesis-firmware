@@ -10,6 +10,10 @@
     <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
     <property object="PA00" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_RAIL_UTIL_AOX_ANTENNA_PIN0%T%sl_rail_util_aox_config.h"/>
     <property object="PA00" propertyId="pin.reserve" value="Reserved"/>
+    <property object="PB04" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_SIMPLE_BUTTON_BTN0%T%sl_simple_button_btn0_config.h"/>
+    <property object="PB04" propertyId="pin.reserve" value="Reserved"/>
+    <property object="PB05" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_SIMPLE_BUTTON_BTN1%T%sl_simple_button_btn1_config.h"/>
+    <property object="PB05" propertyId="pin.reserve" value="Reserved"/>
     <property object="PC00" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_MX25_FLASH_SHUTDOWN_CS%T%sl_mx25_flash_shutdown_eusart_config.h"/>
     <property object="PC00" propertyId="pin.reserve" value="Reserved"/>
     <property object="PC09" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_BOARD_ENABLE_SENSOR_IMU%T%sl_board_control_config.h"/>

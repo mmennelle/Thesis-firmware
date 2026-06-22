@@ -19,6 +19,7 @@
                 "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_host/inc",
                 "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_controller/inc",
                 "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/boards/hardware/board/inc",
+                "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/platform_core/platform/driver/button/inc",
                 "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/platform_core/platform/service/clock_manager/inc",
                 "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/platform_core/platform/service/clock_manager/src",
                 "C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/cmsis/Core/Include",

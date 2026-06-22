@@ -45,6 +45,12 @@
 #include "sl_board_control.h"
 #include "sl_imu.h"
 
+// Onboard push buttons (BRD2606A): BTN0 (PB04) halts the firmware into a
+// low-power standby; BTN1 (PB05) restarts it from the default boot state.
+// RESET keeps its default hardware behaviour.
+#include "sl_simple_button.h"
+#include "sl_simple_button_instances.h"
+
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>
@@ -114,8 +120,8 @@ static cs_reflector_config_t cs_reflector_config = {
 //     reflector procedures get the radio, and push the IMU broadcaster up to
 //     10 Hz now that CTE is no longer hogging airtime.
 //   * Disconnected (AoA mode): restore the 20 ms CTE stream so the AoA locator
-//     re-acquires, and drop the IMU broadcaster back to 3 Hz so it yields
-//     airtime to CTE.
+//     re-acquires, and return the IMU broadcaster to its AoA-mode adv cadence
+//     (IMU_RATE_AOA_HZ); the host decimates the IMU stream as needed.
 //
 // CS "speed" itself is driven entirely by the initiator's procedure timing;
 // the tag's only lever is freeing the radio (CTE off), which is exactly what
@@ -131,8 +137,12 @@ extern sl_status_t adv_cte_start(void);  // (re)start CTE adv with current param
 #define CTE_ADV_INTERVAL_ACTIVE  ((uint16_t)SL_GATT_SERVICE_CTE_SILABS_ADV_INTERVAL) // 20 ms
 #define CTE_ADV_INTERVAL_PAUSED  ((uint16_t)0xFFFFU)  // ~40.96 s => effectively off
 
-// IMU broadcast rates for the two modes (Hz).
-#define IMU_RATE_AOA_HZ                     3U   // AoA mode: yield airtime to CTE
+// IMU broadcast rates for the two modes (Hz). These set the on-air advertising
+// cadence of the dedicated IMU set; the payload itself is refreshed at the
+// faster fusion rate (IMU_ADV_UPDATE_RATE_HZ) and only when a new fused sample
+// is ready, so every aired packet is fresh and the sequence number advances
+// exactly once per sample (see app_process_action / update_imu_advertising_packet).
+#define IMU_RATE_AOA_HZ                     10U  // AoA mode: fast IMU; host decimates
 #define IMU_RATE_CS_HZ                      10U  // CS mode: CTE paused, room to run
 
 // Pause the CTE tone stream (CS session starting).
@@ -194,6 +204,13 @@ typedef struct {
 
 static bool bluetooth_ready = false;
 static bool imu_ready = false;
+
+// Button-driven power control (see sl_button_on_change / app_process_action).
+// The handler runs in GPIO interrupt context, so it only sets a request flag;
+// the actual work is done from the super loop.
+static volatile bool halt_requested = false;    // BTN0: enter standby
+static volatile bool resume_requested = false;  // BTN1: restart
+static bool standby = false;                    // true while halted in standby
 static uint8_t imu_sequence = 0;
 static uint32_t imu_last_update_tick = 0;
 static uint32_t imu_update_period_ticks = 1;
@@ -361,9 +378,15 @@ static void update_imu_advertising_packet(void)
     return;
   }
 
-  if (sample_valid) {
-    sample.status |= IMU_STATUS_SAMPLE_VALID;
+  // Fix 1 (phase-lock): only advance the sequence number and refresh the
+  // transports on a genuinely new fused sample. Combined with polling at the
+  // fusion rate (app_process_action) this strictly ties seq to real data --
+  // exactly one seq per sample, no dup/skip churn from adv-vs-refresh phase
+  // slip, and set_data/notify are always "ahead" of the on-air interval.
+  if (!sample_valid) {
+    return;
   }
+  sample.status |= IMU_STATUS_SAMPLE_VALID;
   (void)sample.status; // status not transmitted (payload budget)
 
   // Build the shared 24-byte IMU payload once (single seq per fused sample).
@@ -444,6 +467,38 @@ static void imu_set_rate(uint8_t rate_hz)
                                       sl_bt_legacy_advertiser_non_connectable);
 }
 
+// BTN0 action: tear down all radio activity and halt the Bluetooth controller
+// so the power manager can drop the MCU into EM2 standby. The buttons are in
+// interrupt mode, so a later BTN1 press still wakes the device. Restart is a
+// full system reboot (BTN1) which re-runs the default boot init.
+static void enter_standby(void)
+{
+  // Drop any open connection so the peer (CS initiator / AoA locator) is freed.
+  if (active_connection != 0xFFU) {
+    (void)sl_bt_connection_close(active_connection);
+    active_connection = 0xFFU;
+    imu_notify_enabled = false;
+  }
+  // Stop the user advertising sets (connectable beacon + IMU broadcaster).
+  if (imu_set_handle != 0xFFU) {
+    (void)sl_bt_advertiser_stop(imu_set_handle);
+  }
+  if (advertising_set_handle != 0xFFU) {
+    (void)sl_bt_advertiser_stop(advertising_set_handle);
+  }
+  // Power down the onboard ICM-40627 IMU rail.
+  if (imu_ready) {
+    (void)sl_board_disable_sensor(SL_BOARD_SENSOR_IMU);
+    imu_ready = false;
+  }
+  // Halt the BLE controller: this forces the radio idle (including the
+  // component-owned CTE advertiser) so no further transmissions occur and the
+  // device is allowed to sleep in EM2 until a button interrupt wakes it.
+  (void)sl_bt_system_halt(1);
+  standby = true;
+  app_log_info("[APP] BTN0: halted -> low-power standby" APP_LOG_NL);
+}
+
 /**************************************************************************//**
  * Application Init.
  *****************************************************************************/
@@ -472,12 +527,31 @@ void app_process_action(void)
 {
   uint32_t now_tick;
 
-  if (!bluetooth_ready) {
+  // Service button power-control requests from the super loop (outside the
+  // GPIO interrupt context).
+  if (resume_requested) {
+    resume_requested = false;
+    app_log_info("[APP] BTN1: restart from default state" APP_LOG_NL);
+    sl_bt_system_reboot();   // reboot -> full default-state re-init; no return
+    return;
+  }
+  if (halt_requested) {
+    halt_requested = false;
+    enter_standby();
+    return;
+  }
+
+  if (standby || !bluetooth_ready) {
     return;
   }
 
   now_tick = sl_sleeptimer_get_tick_count();
-  if ((uint32_t)(now_tick - imu_last_update_tick) >= imu_update_period_ticks) {
+  // Fix 1 (phase-lock): poll at the fusion sample rate, not the on-air adv
+  // cadence. update_imu_advertising_packet() gates on fresh fused data, so the
+  // payload/seq is always refreshed "ahead" of the advertiser interval -- no
+  // packet is stale-repeated (dup seq) or overwritten before it airs (skip seq).
+  if ((uint32_t)(now_tick - imu_last_update_tick)
+        >= (imu_timer_freq_hz / IMU_ADV_UPDATE_RATE_HZ)) {
     imu_last_update_tick = now_tick;
     update_imu_advertising_packet();
   }
@@ -582,12 +656,15 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
         // Use the device identity address (same as the connectable set) so
         // the locator-side tag id matches across angle/ and imu/ topics.
         (void)sl_bt_advertiser_clear_random_address(imu_set_handle);
-        // Boot into AoA mode: 3 Hz IMU broadcast (interval 533 * 0.625 ms =
-        // 333 ms) so the IMU set yields airtime to the Silabs proprietary CTE
-        // extended adv (gatt_service_cte_silabs @ 20 ms) — that one is what the
-        // AoA locator syncs to. When a CS initiator connects we switch to CS
-        // mode and bump this to 10 Hz (see imu_set_rate / connection events).
-        (void)sl_bt_advertiser_set_timing(imu_set_handle, 533, 533, 0, 0);
+        // Boot into AoA mode at IMU_RATE_AOA_HZ (interval 1600/10 = 160 *
+        // 0.625 ms = 100 ms => 10 Hz). The Silabs proprietary CTE extended adv
+        // (gatt_service_cte_silabs @ 20 ms) is what the AoA locator syncs to;
+        // the IMU set shares airtime with it and the host decimates the IMU
+        // stream as needed. When a CS initiator connects we keep IMU fast and
+        // additionally stream it over the CS GATT link (see connection events).
+        (void)sl_bt_advertiser_set_timing(imu_set_handle,
+                                          1600U / IMU_RATE_AOA_HZ,
+                                          1600U / IMU_RATE_AOA_HZ, 0, 0);
         (void)sl_bt_legacy_advertiser_start(imu_set_handle,
                                             sl_bt_legacy_advertiser_non_connectable);
       }
@@ -652,7 +729,7 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
                                            sl_bt_legacy_advertiser_connectable);
         app_assert_status(sc);
         // Back to AoA mode: restore the 20 ms CTE tone stream so the locator
-        // re-acquires, and drop the IMU broadcaster to 3 Hz to yield airtime.
+        // re-acquires, and return the IMU broadcaster to IMU_RATE_AOA_HZ.
         cte_resume();
         imu_set_rate(IMU_RATE_AOA_HZ);
       }
@@ -702,3 +779,23 @@ void sl_bt_on_event(sl_bt_msg_t *evt)
       break;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Onboard button control (BRD2606A).
+// ---------------------------------------------------------------------------
+// BTN0 -> halt the firmware into low-power standby; BTN1 -> restart from the
+// default state. Called from the simple_button driver on every edge; we act on
+// the press edge only and defer the work to app_process_action via flags.
+#if (SL_SIMPLE_BUTTON_COUNT >= 2)
+void sl_button_on_change(const sl_button_t *handle)
+{
+  if (sl_button_get_state(handle) != SL_SIMPLE_BUTTON_PRESSED) {
+    return;
+  }
+  if (handle == SL_SIMPLE_BUTTON_INSTANCE(0)) {
+    halt_requested = true;     // BTN0: enter low-power standby
+  } else if (handle == SL_SIMPLE_BUTTON_INSTANCE(1)) {
+    resume_requested = true;   // BTN1: restart from default state
+  }
+}
+#endif // SL_SIMPLE_BUTTON_COUNT >= 2

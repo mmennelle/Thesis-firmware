@@ -110,6 +110,12 @@ component:
   vendor: silabs
   id: rail_util_pti
 - package: simplicity_sdk
+  instance:
+  - btn0
+  - btn1
+  vendor: silabs
+  id: simple_button
+- package: simplicity_sdk
   vendor: silabs
   id: sl_main
 - package: simplicity_sdk
