@@ -472,3 +472,5 @@
 10259	11516	8037823503359376	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj	a7878b479ff95748
 10443	11531	8037823505204778	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/autogen/sl_event_handler.c.obj	5adecc587007b032
 11532	12386	8037823516082741	base/bt_cs_soc_initiator_2.out	642f2563c836f73b
+111	958	8037829705418199	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/app.c.obj	a7878b479ff95748
+959	1758	8037829713929401	base/bt_cs_soc_initiator_2.out	642f2563c836f73b

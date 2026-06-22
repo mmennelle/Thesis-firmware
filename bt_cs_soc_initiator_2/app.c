@@ -215,6 +215,51 @@ static void imu_forward_frame(const uint8_t *data, size_t len)
 }
 
 // ---------------------------------------------------------------------------
+// CS authentication Layer 2 (address pin): peer-identity forward (default ON)
+// ---------------------------------------------------------------------------
+// The initiator already raises security on every connection (see the
+// connection_parameters handler). Once the link is encrypted we forward the
+// connected tag's Bluetooth address and the achieved security level to the
+// host as a single, easily-parsed line:
+//   "[BOND] <ADDR12> <SEC>\n"
+//     ADDR12 : 12 uppercase hex, MSB-first (matches the host tag id, e.g.
+//              ble-pd-449FDA247AD0 -> 449FDA247AD0)
+//     SEC    : security level 1..4 (sl_bt_connection_security_t + 1)
+// The host mode_controller pins ADDR (and a minimum SEC) per CS episode. This
+// is emitted well after connection + encryption, never during the idle VCOM
+// GO/STOP gate window, so it cannot disturb the CS handshake. Unlike the raw
+// IRK, the address is available without the external bonding database, so no
+// component swap / project regeneration is required.
+#ifndef CS_INIT_FORWARD_BOND
+#define CS_INIT_FORWARD_BOND 1
+#endif
+
+#if CS_INIT_FORWARD_BOND
+static void bond_forward(uint8_t connection, uint8_t security_mode)
+{
+  static const char hexd[] = "0123456789ABCDEF";
+  static const char pfx[] = "[BOND] ";
+  bd_addr *addr = ble_peer_manager_get_bt_address(connection);
+  if (addr == NULL) {
+    return;
+  }
+  char line[sizeof(pfx) + 12 + 1 + 1]; // prefix + 12 hex + ' ' + sec + '\n'
+  size_t o = 0u;
+  for (size_t i = 0u; i < (sizeof(pfx) - 1u); i++) {
+    line[o++] = pfx[i];
+  }
+  for (int i = 5; i >= 0; i--) {
+    line[o++] = hexd[(addr->addr[i] >> 4) & 0x0Fu];
+    line[o++] = hexd[addr->addr[i] & 0x0Fu];
+  }
+  line[o++] = ' ';
+  line[o++] = (char)('0' + (uint8_t)((security_mode + 1u) & 0x0Fu)); // 1..4
+  line[o++] = '\n';
+  (void)sl_iostream_write(sl_iostream_vcom_handle, line, o);
+}
+#endif // CS_INIT_FORWARD_BOND
+
+// ---------------------------------------------------------------------------
 // CS authentication Layer 2: peer-IRK capture + forward (default OFF)
 // ---------------------------------------------------------------------------
 // The asset tag distributes its Identity Resolving Key (IRK) during Secure
@@ -1320,6 +1365,11 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
           sc = sl_bt_cs_read_remote_supported_capabilities(evt->data.evt_connection_parameters.connection);
           app_assert_status(sc);
           cs_initiator_instances[instance_num].read_remote_capabilities = true;
+#if CS_INIT_FORWARD_BOND
+          // Link is now encrypted: forward the pinned peer identity once.
+          bond_forward(evt->data.evt_connection_parameters.connection,
+                       (uint8_t)evt->data.evt_connection_parameters.security_mode);
+#endif
           log_info(APP_INSTANCE_PREFIX "Reading capabilities..." NL,
                    evt->data.evt_connection_parameters.connection);
         }
