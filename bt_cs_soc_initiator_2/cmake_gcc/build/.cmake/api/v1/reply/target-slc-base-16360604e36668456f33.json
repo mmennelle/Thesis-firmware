@@ -1017,15 +1017,15 @@
 			[
 				{
 					"backtrace" : 6,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../autogen"
+				},
+				{
+					"backtrace" : 6,
 					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../config"
 				},
 				{
 					"backtrace" : 6,
 					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../config/btconf"
-				},
-				{
-					"backtrace" : 6,
-					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../autogen"
 				},
 				{
 					"backtrace" : 6,
@@ -1932,15 +1932,15 @@
 			[
 				{
 					"backtrace" : 6,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../autogen"
+				},
+				{
+					"backtrace" : 6,
 					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../config"
 				},
 				{
 					"backtrace" : 6,
 					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../config/btconf"
-				},
-				{
-					"backtrace" : 6,
-					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../autogen"
 				},
 				{
 					"backtrace" : 6,
@@ -2564,15 +2564,15 @@
 			[
 				{
 					"backtrace" : 6,
+					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../autogen"
+				},
+				{
+					"backtrace" : 6,
 					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../config"
 				},
 				{
 					"backtrace" : 6,
 					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../config/btconf"
-				},
-				{
-					"backtrace" : 6,
-					"path" : "C:/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_soc_initiator_2/cmake_gcc/../autogen"
 				},
 				{
 					"backtrace" : 6,

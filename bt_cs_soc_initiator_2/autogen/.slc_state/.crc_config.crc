@@ -20,6 +20,7 @@ sl_bgapi_trace_config.h=-1914472062
 sl_bluetooth_config.h=1444820646
 sl_bluetooth_connection_config.h=636715065
 sl_bluetooth_cs_config.h=1796881593
+sl_bluetooth_external_bondingdb_config.h=-2129864335
 sl_board_control_config.h=-1156067289
 sl_bt_host_adaptation_config.h=-62673327
 sl_btctrl_anchor_selection_config.h=-1749655024

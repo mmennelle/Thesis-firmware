@@ -214,6 +214,122 @@ static void imu_forward_frame(const uint8_t *data, size_t len)
   (void)sl_iostream_write(sl_iostream_vcom_handle, line, o);
 }
 
+// ---------------------------------------------------------------------------
+// CS authentication Layer 2 (address pin): peer-identity forward (default ON)
+// ---------------------------------------------------------------------------
+// The initiator already raises security on every connection (see the
+// connection_parameters handler). Once the link is encrypted we forward the
+// connected tag's Bluetooth address and the achieved security level to the
+// host as a single, easily-parsed line:
+//   "[BOND] <ADDR12> <SEC>\n"
+//     ADDR12 : 12 uppercase hex, MSB-first (matches the host tag id, e.g.
+//              ble-pd-449FDA247AD0 -> 449FDA247AD0)
+//     SEC    : security level 1..4 (sl_bt_connection_security_t + 1)
+// The host mode_controller pins ADDR (and a minimum SEC) per CS episode. This
+// is emitted well after connection + encryption, never during the idle VCOM
+// GO/STOP gate window, so it cannot disturb the CS handshake. Unlike the raw
+// IRK, the address is available without the external bonding database, so no
+// component swap / project regeneration is required.
+#ifndef CS_INIT_FORWARD_BOND
+#define CS_INIT_FORWARD_BOND 1
+#endif
+
+#if CS_INIT_FORWARD_BOND
+static void bond_forward(uint8_t connection, uint8_t security_mode)
+{
+  static const char hexd[] = "0123456789ABCDEF";
+  static const char pfx[] = "[BOND] ";
+  bd_addr *addr = ble_peer_manager_get_bt_address(connection);
+  if (addr == NULL) {
+    return;
+  }
+  char line[sizeof(pfx) + 12 + 1 + 1]; // prefix + 12 hex + ' ' + sec + '\n'
+  size_t o = 0u;
+  for (size_t i = 0u; i < (sizeof(pfx) - 1u); i++) {
+    line[o++] = pfx[i];
+  }
+  for (int i = 5; i >= 0; i--) {
+    line[o++] = hexd[(addr->addr[i] >> 4) & 0x0Fu];
+    line[o++] = hexd[addr->addr[i] & 0x0Fu];
+  }
+  line[o++] = ' ';
+  line[o++] = (char)('0' + (uint8_t)((security_mode + 1u) & 0x0Fu)); // 1..4
+  line[o++] = '\n';
+  (void)sl_iostream_write(sl_iostream_vcom_handle, line, o);
+}
+#endif // CS_INIT_FORWARD_BOND
+
+// ---------------------------------------------------------------------------
+// CS authentication Layer 2: peer-IRK capture + forward (default OFF)
+// ---------------------------------------------------------------------------
+// The asset tag distributes its Identity Resolving Key (IRK) during Secure
+// Connections bonding (the initiator already raises security on every
+// connection -- see the connection_parameters handler). The raw IRK bytes are
+// only visible to the application through the External Bonding Database feature
+// (bluetooth_feature_external_bonding_database): sl_bt_sm_get_bonding_details
+// exposes address/level/key-size but NOT the IRK. All of the code below is
+// therefore compiled only when that component is present; until it is added to
+// the project the catalog symbol is undefined and this is a no-op, so the
+// CS / AoA / IMU pipeline is byte-for-byte unchanged.
+//
+// CS_INIT_FORWARD_IRK additionally gates the host-facing emission, so that even
+// with the component present nothing new appears on VCOM unless explicitly
+// enabled for a security-enrolled build.
+#ifndef CS_INIT_FORWARD_IRK
+#define CS_INIT_FORWARD_IRK 0
+#endif
+
+#if defined(SL_CATALOG_BLUETOOTH_FEATURE_EXTERNAL_BONDING_DATABASE_PRESENT)
+// Provide a local IRK to the stack on request. We do NOT persist bondings
+// (every connection re-pairs, which is the same code path as a first connect),
+// so a per-boot random local identity is sufficient and is generated lazily.
+static void ebd_get_local_irk(uint8_t out[16])
+{
+  static bool have_irk = false;
+  static uint8_t local_irk[16];
+  if (!have_irk) {
+    size_t got = 0u;
+    sl_status_t sc = sl_bt_system_get_random_data(sizeof(local_irk),
+                                                  sizeof(local_irk),
+                                                  &got, local_irk);
+    if ((sc != SL_STATUS_OK) || (got < sizeof(local_irk))) {
+      // Deterministic fallback: always hand the stack a valid 16-byte key.
+      for (size_t i = 0u; i < sizeof(local_irk); i++) {
+        local_irk[i] = (uint8_t)(0xA5u ^ i);
+      }
+    }
+    have_irk = true;
+  }
+  memcpy(out, local_irk, 16u);
+}
+
+#if CS_INIT_FORWARD_IRK
+// Forward the connected tag's IRK to the host as one easily-parsed line:
+// "[IRK] " + uppercase hex + "\n" (bytes in the little-endian order delivered
+// by the stack). The host mode_controller pins this exact value per CS episode
+// (on_cs_peer_irk / _cs_irk_ok); enrollment records the same forwarded value,
+// so the byte order only has to be self-consistent.
+static void irk_forward(const uint8_t *irk, size_t len)
+{
+  static const char hexd[] = "0123456789ABCDEF";
+  char line[6 + (16 * 2) + 1];
+  size_t o = 0u;
+  line[o++] = '[';
+  line[o++] = 'I';
+  line[o++] = 'R';
+  line[o++] = 'K';
+  line[o++] = ']';
+  line[o++] = ' ';
+  for (size_t i = 0u; (i < len) && (i < 16u); i++) {
+    line[o++] = hexd[(irk[i] >> 4) & 0x0Fu];
+    line[o++] = hexd[irk[i] & 0x0Fu];
+  }
+  line[o++] = '\n';
+  (void)sl_iostream_write(sl_iostream_vcom_handle, line, o);
+}
+#endif // CS_INIT_FORWARD_IRK
+#endif // SL_CATALOG_BLUETOOTH_FEATURE_EXTERNAL_BONDING_DATABASE_PRESENT
+
 // Derive the active connection count from the instance table so the value
 // can never get out of sync with the actual array contents (prevents stale
 // counter leaks that pinned creation at SL_STATUS_FULL / 0x1c).
@@ -1249,6 +1365,11 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
           sc = sl_bt_cs_read_remote_supported_capabilities(evt->data.evt_connection_parameters.connection);
           app_assert_status(sc);
           cs_initiator_instances[instance_num].read_remote_capabilities = true;
+#if CS_INIT_FORWARD_BOND
+          // Link is now encrypted: forward the pinned peer identity once.
+          bond_forward(evt->data.evt_connection_parameters.connection,
+                       (uint8_t)evt->data.evt_connection_parameters.security_mode);
+#endif
           log_info(APP_INSTANCE_PREFIX "Reading capabilities..." NL,
                    evt->data.evt_connection_parameters.connection);
         }
@@ -1385,6 +1506,43 @@ void sl_bt_on_event(sl_bt_msg_t * evt)
         }
       }
       break;
+
+#if defined(SL_CATALOG_BLUETOOTH_FEATURE_EXTERNAL_BONDING_DATABASE_PRESENT)
+    // -------------------------------
+    // External Bonding Database (CS auth Layer 2, ephemeral keystore).
+    // We persist nothing: answer every data request with 0-length ("not
+    // found") so each connection performs a fresh SC pairing -- identical to
+    // the first-connect path the initiator already handles. On each pairing the
+    // stack hands us the peer's keys via the data event; we lift the tag's IRK
+    // (type 0x6) and, when enabled, forward it to the host.
+    case sl_bt_evt_external_bondingdb_data_request_id:
+      (void)sl_bt_external_bondingdb_set_data(
+          evt->data.evt_external_bondingdb_data_request.connection,
+          evt->data.evt_external_bondingdb_data_request.type,
+          0u, NULL);
+      break;
+    case sl_bt_evt_external_bondingdb_data_id:
+#if CS_INIT_FORWARD_IRK
+      if (evt->data.evt_external_bondingdb_data.type
+          == sl_bt_external_bondingdb_data_irk) {
+        irk_forward(evt->data.evt_external_bondingdb_data.data.data,
+                    evt->data.evt_external_bondingdb_data.data.len);
+      }
+#endif // CS_INIT_FORWARD_IRK
+      break;
+    case sl_bt_evt_external_bondingdb_local_irk_request_id:
+      {
+        uint8_t local_irk[16];
+        ebd_get_local_irk(local_irk);
+        (void)sl_bt_external_bondingdb_set_local_irk(sizeof(local_irk),
+                                                    local_irk);
+      }
+      break;
+    case sl_bt_evt_external_bondingdb_data_ready_id:
+      // Stack has all bonding data; the encrypted link is now usable.
+      break;
+#endif // SL_CATALOG_BLUETOOTH_FEATURE_EXTERNAL_BONDING_DATABASE_PRESENT
+
     default:
       break;
   }
