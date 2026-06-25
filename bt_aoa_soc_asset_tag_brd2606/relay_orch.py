@@ -50,8 +50,8 @@ WIRING / PREREQUISITES
 
 USAGE
 -----
-  # Relay NCP over USB serial:
-  python relay_orch.py --serial COM7 --baud 115200
+  # Relay NCP over USB serial (stock bt_cs_ncp uses HW RTS/CTS flow control, on by default):
+  python relay_orch.py --serial COM6 --baud 115200
 
   # Relay NCP over WSTK-on-IP (raw VCOM TCP, e.g. 4901):
   python relay_orch.py --ip 192.168.8.220 --port 4901
@@ -85,19 +85,23 @@ except ImportError:  # pragma: no cover
 # Configuration -- EDIT THESE FOR YOUR RIG
 # -----------------------------------------------------------------------------
 
-# Path to the BGAPI definition file(s). sl_bt.xapi ships in the SDK; the NCP build
-# also emits the project's xapi under autogen/. Point this at the SDK copy.
+# Path to the BGAPI definition file(s). sl_bt.xapi ships in the SDK under
+# bluetooth_le_host/api/. It already defines the CS user-service messages.
 API_XAPI = [
-    r"C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/protocol/bluetooth/api/sl_bt.xapi",
+    r"C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_host/api/sl_bt.xapi",
 ]
 
 # The genuine token advertises with this name; the relay clones it to attract the
-# genuine initiator. The stock CS reflector advertises as "CS RFLCT".
+# genuine initiator. The stock CS reflector advertises as "CS RFLCT" -- but the combined
+# AoA asset-tag firmware may advertise a different name, so prefer pinning by address below.
 TOKEN_ADV_NAME = "CS RFLCT"
 
-# Optional: pin the genuine token by Bluetooth address for the conn #2 backhaul leg.
-# Leave None to connect to the first peer matching TOKEN_ADV_NAME.
-TOKEN_BT_ADDRESS: Optional[str] = None  # e.g. "AA:BB:CC:DD:EE:FF"
+# Pin the genuine token by Bluetooth address. When set, the relay matches the token by
+# address ONLY (name is ignored) -- the robust option for the asset-tag firmware.
+# VERIFY against the scan discovery log printed at startup (it lists address + name + RSSI
+# for every device seen). Your reported value was "449FDAE24523F"; a BLE MAC is 12 hex
+# digits, so confirm the exact address from the log and correct this if needed.
+TOKEN_BT_ADDRESS: Optional[str] = "44:9f:da:e2:45:23"  # <-- VERIFY from discovery log
 TOKEN_BT_ADDRESS_TYPE = 0  # 0 = public, 1 = static random
 
 # CS reflector role parameters the relay presents to the genuine initiator (conn #1).
@@ -183,6 +187,24 @@ def pack_get_target_config() -> bytes:
     return struct.pack("<B", AcpCmd.GET_TARGET_CONFIG)
 
 
+def _parse_adv_name(ad: bytes) -> Optional[str]:
+    """Extract the (complete or shortened) local name from an AD payload."""
+    i = 0
+    while i + 1 < len(ad):
+        length = ad[i]
+        if length == 0:
+            break
+        ad_type = ad[i + 1]
+        value = ad[i + 2:i + 1 + length]
+        if ad_type in (0x08, 0x09):  # shortened / complete local name
+            try:
+                return value.decode("utf-8", "replace")
+            except Exception:
+                return None
+        i += 1 + length
+    return None
+
+
 def parse_cs_event(payload: bytes) -> dict:
     """Decode a cs_acp_event_t delivered via user_cs_service_message_to_host.
 
@@ -262,6 +284,7 @@ class RelayOrchestrator:
         self.log = logging.getLogger("relay")
         self.state = RelayState()
         self._csv: Optional[io.TextIOWrapper] = None
+        self._seen: set = set()
 
     # -- lifecycle -----------------------------------------------------------
 
@@ -283,9 +306,11 @@ class RelayOrchestrator:
     def run(self):
         self.open()
         self.log.info("Resetting relay NCP...")
-        self.lib.bt.system.reset(0)
+        # sl_bt_system_reset was replaced by system_reboot; it re-emits system_boot.
+        self.lib.bt.system.reboot()
         try:
-            for evt in self.lib.gen_events(max_time=None):
+            # timeout=None blocks per event; max_time=None runs until interrupted.
+            for evt in self.lib.gen_events(timeout=None, max_time=None):
                 self._dispatch(evt)
         except KeyboardInterrupt:
             self.log.info("Interrupted; tearing down.")
@@ -337,21 +362,24 @@ class RelayOrchestrator:
         """Scan for the genuine token to capture its AD (clone) and, optionally, to
         open the auth backhaul (conn #2)."""
         self.lib.bt.scanner.set_parameters(
-            self.lib.bt.scanner.SCAN_MODE_PASSIVE, 160, 160)
+            self.lib.bt.scanner.SCAN_MODE_SCAN_MODE_PASSIVE, 160, 160)
         self.lib.bt.scanner.start(
-            self.lib.bt.scanner.SCAN_PHY_1M,
+            self.lib.bt.scanner.SCAN_PHY_SCAN_PHY_1M,
             self.lib.bt.scanner.DISCOVER_MODE_DISCOVER_GENERIC)
         self.log.info("Scanning for genuine token to clone its advertising data...")
 
     # -- event dispatch ------------------------------------------------------
 
     def _dispatch(self, evt):
-        name = evt.__class__.__name__  # e.g. 'bt_evt_system_boot'
-        handler = getattr(self, "_on_" + name.replace("bt_evt_", ""), None)
+        # All pybgapi events share the BGEvent Python class; the real identity is
+        # evt._str, e.g. 'bt_evt_system_boot'. Map it to a handler method.
+        ident = getattr(evt, "_str", "")  # 'bt_evt_<class>_<name>'
+        key = ident.replace("bt_evt_", "", 1)
+        handler = getattr(self, "_on_" + key, None)
         if handler:
             handler(evt)
         else:
-            self.log.debug("unhandled evt %s", name)
+            self.log.debug("unhandled evt %s", ident or evt)
 
     def _on_system_boot(self, evt):
         self.log.info("Relay NCP boot: BLE stack %d.%d.%d",
@@ -364,6 +392,8 @@ class RelayOrchestrator:
     def _on_scanner_legacy_advertisement_report(self, evt):
         if self.state.cloned:
             return
+        # Log every distinct device so the operator can identify the token's real address.
+        self._log_discovery(evt)
         if not self._is_genuine_token(evt):
             return
         # Capture the token's real advertising payload for a faithful clone.
@@ -378,15 +408,27 @@ class RelayOrchestrator:
         if ENABLE_AUTH_BACKHAUL and self.state.token_conn is None:
             self.log.info("Opening auth backhaul to genuine token %s.", evt.address)
             self.lib.bt.connection.open(
-                evt.address, evt.address_type, self.lib.bt.gap.PHY_1M)
+                evt.address, evt.address_type, self.lib.bt.gap.PHY_PHY_1M)
 
     # Some SDKs deliver extended reports instead; alias to the same handler.
     _on_scanner_extended_advertisement_report = _on_scanner_legacy_advertisement_report
 
+    def _log_discovery(self, evt):
+        """Print each newly-seen device (address, name, RSSI) to help pin the token."""
+        addr = evt.address
+        if addr in self._seen:
+            return
+        self._seen.add(addr)
+        name = _parse_adv_name(bytes(evt.data)) or "<no name>"
+        rssi = getattr(evt, "rssi", 0)
+        self.log.info("  discovered %s (type %d) rssi=%-4d name='%s'",
+                      addr, evt.address_type, rssi, name)
+
     def _is_genuine_token(self, evt) -> bool:
-        if TOKEN_BT_ADDRESS and evt.address.lower() != TOKEN_BT_ADDRESS.lower():
-            return False
-        # Match by complete local name in the AD payload.
+        if TOKEN_BT_ADDRESS:
+            # Address pinned: match on address only (name ignored).
+            return evt.address.lower() == TOKEN_BT_ADDRESS.lower()
+        # Otherwise match by complete local name in the AD payload.
         return TOKEN_ADV_NAME.encode() in bytes(evt.data)
 
     def _on_connection_opened(self, evt):
@@ -421,7 +463,7 @@ class RelayOrchestrator:
                 self.lib.bt.connection.open(
                     self.state.token_address,
                     self.state.token_address_type,
-                    self.lib.bt.gap.PHY_1M)
+                    self.lib.bt.gap.PHY_PHY_1M)
 
     def _on_user_cs_service_message_to_host(self, evt):
         """CS ACP events from the relay's reflector/initiator role."""
@@ -481,7 +523,11 @@ class RelayOrchestrator:
 
 def build_connector(args):
     if args.serial:
-        return bgapi.SerialConnector(args.serial, baudrate=args.baud)
+        # The stock bt_cs_ncp firmware enables SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE =
+        # uartdrvFlowControlHw, so the host MUST assert RTS/CTS or the NCP never transmits
+        # (CTS stays deasserted -> "No response"). Default on; --no-flow disables it.
+        return bgapi.SerialConnector(args.serial, baudrate=args.baud,
+                                     rtscts=not args.no_flow)
     if args.ip:
         return bgapi.SocketConnector((args.ip, args.port))
     raise SystemExit("Specify --serial COMx or --ip <addr> [--port 4901].")
@@ -492,6 +538,8 @@ def main(argv=None):
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--serial", help="Relay NCP serial port, e.g. COM7")
     ap.add_argument("--baud", type=int, default=115200)
+    ap.add_argument("--no-flow", action="store_true",
+                    help="Disable HW RTS/CTS flow control (stock NCP needs it ON).")
     ap.add_argument("--ip", help="Relay NCP WSTK IP (raw VCOM TCP)")
     ap.add_argument("--port", type=int, default=4901)
     ap.add_argument("-v", "--verbose", action="store_true")

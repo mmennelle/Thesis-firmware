@@ -223,3 +223,6 @@
 9615	10422	8025767642977268	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sl_power_manager_handler.c.obj	9a94e04eb853019d
 9863	10433	8025767645461824	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/extended_result.c.obj	9f246fe587b68be4
 9069	10503	8025767637531482	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sl_event_handler.c.obj	9894c32be4dbc529
+40	361	8040603035639548	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sli_bt_ncp_transport_usart_isr.c.obj	745e0bc67bad7afb
+32	412	8040603035558050	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sl_uartdrv_init.c.obj	1bb0931844933b02
+413	1358	8040603039363119	base/bt_cs_ncp.out	4ff7e1e0f965cf50
