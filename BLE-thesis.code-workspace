@@ -4,28 +4,40 @@
             "path": "..\\BLE-thesis\\bt_aoa_soc_asset_tag_brd2606"
         },
         {
-            "path": "..\\BLE-thesis\\bt_ncp"
+            "name": "bt_ncp",
+            "path": "bt_ncp"
         },
         {
-            "path": "..\\BLE-thesis\\bt_cs_soc_reflector"
+            "name": "bt_cs_soc_reflector",
+            "path": "bt_cs_soc_reflector"
         },
         {
-            "path": "..\\BLE-thesis\\bt_cs_soc_initiator"
+            "name": "bt_cs_soc_initiator",
+            "path": "bt_cs_soc_initiator"
         },
         {
-            "path": "..\\BLE-thesis\\bt_cs_ncp"
+            "name": "bt_cs_ncp",
+            "path": "bt_cs_ncp"
         },
         {
-            "path": "..\\BLE-thesis\\bt_cs_soc_initiator_2"
+            "name": "bt_cs_soc_initiator_2",
+            "path": "bt_cs_soc_initiator_2"
         },
         {
-            "path": "..\\BLE-thesis\\bt_cs_soc_reflector_brd2606"
+            "name": "bt_cs_soc_reflector_brd2606",
+            "path": "bt_cs_soc_reflector_brd2606"
         },
         {
-            "path": "..\\BLE-thesis\\bt_aoa_soc_asset_tag"
+            "name": "bt_aoa_soc_asset_tag",
+            "path": "bt_aoa_soc_asset_tag"
         },
         {
-            "path": "..\\BLE-thesis\\bt_aoa_ncp_locator"
+            "name": "bt_aoa_ncp_locator",
+            "path": "bt_aoa_ncp_locator"
+        },
+        {
+            "name": "bt_cs_ncp_2606",
+            "path": "bt_cs_ncp_2606"
         }
     ],
     "siWorkspaceRoot": "C:\\Users\\mpmen\\SimplicityStudio\\BLE-thesis"

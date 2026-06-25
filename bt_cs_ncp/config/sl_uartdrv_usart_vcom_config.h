@@ -96,20 +96,20 @@
 #define SL_UARTDRV_USART_VCOM_PERIPHERAL_NO      0
 #endif
 
-// USART0 TX on PA08
+// DK2606A VCOM: USART0 TX routed to PA05 (board controller VCOM RX)
 #ifndef SL_UARTDRV_USART_VCOM_TX_PORT           
 #define SL_UARTDRV_USART_VCOM_TX_PORT            SL_GPIO_PORT_A
 #endif
 #ifndef SL_UARTDRV_USART_VCOM_TX_PIN            
-#define SL_UARTDRV_USART_VCOM_TX_PIN             8
+#define SL_UARTDRV_USART_VCOM_TX_PIN             5
 #endif
 
-// USART0 RX on PA09
+// DK2606A VCOM: USART0 RX routed to PA06 (board controller VCOM TX)
 #ifndef SL_UARTDRV_USART_VCOM_RX_PORT           
 #define SL_UARTDRV_USART_VCOM_RX_PORT            SL_GPIO_PORT_A
 #endif
 #ifndef SL_UARTDRV_USART_VCOM_RX_PIN            
-#define SL_UARTDRV_USART_VCOM_RX_PIN             9
+#define SL_UARTDRV_USART_VCOM_RX_PIN             6
 #endif
 
 // USART0 CTS on PB05

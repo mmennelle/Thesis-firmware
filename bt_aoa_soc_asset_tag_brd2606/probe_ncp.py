@@ -9,10 +9,13 @@ API_XAPI = [
     r"C:/Users/mpmen/.silabs/slt/installs/conan/p/simpl35774a752829c/p/bluetooth_le_host/api/sl_bt.xapi",
 ]
 PORTS = sys.argv[1:] or ["COM4", "COM6"]
+# DK2606A board controller keeps VCOM handshake disabled, so rtscts=False works best
+# (RTS asserted by pyserial holds the EFR's CTS active even though firmware has HW flow ctrl).
+RTSCTS = False
 
 for port in PORTS:
     try:
-        lib = bgapi.BGLib(bgapi.SerialConnector(port, baudrate=115200, rtscts=True), API_XAPI)
+        lib = bgapi.BGLib(bgapi.SerialConnector(port, baudrate=115200, rtscts=RTSCTS), API_XAPI)
         lib.open()
         try:
             lib.bt.system.hello()  # response command

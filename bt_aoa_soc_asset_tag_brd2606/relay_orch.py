@@ -101,7 +101,7 @@ TOKEN_ADV_NAME = "CS RFLCT"
 # VERIFY against the scan discovery log printed at startup (it lists address + name + RSSI
 # for every device seen). Your reported value was "449FDAE24523F"; a BLE MAC is 12 hex
 # digits, so confirm the exact address from the log and correct this if needed.
-TOKEN_BT_ADDRESS: Optional[str] = "44:9f:da:e2:45:23"  # <-- VERIFY from discovery log
+TOKEN_BT_ADDRESS: Optional[str] = "44:9f:da:24:53:20"  # verified from discovery log
 TOKEN_BT_ADDRESS_TYPE = 0  # 0 = public, 1 = static random
 
 # CS reflector role parameters the relay presents to the genuine initiator (conn #1).
@@ -275,6 +275,7 @@ class RelayState:
     token_address: Optional[str] = None
     token_address_type: int = 0
     cloned: bool = False
+    initialized: bool = False
     results: list = field(default_factory=list)
 
 
@@ -309,6 +310,12 @@ class RelayOrchestrator:
         # sl_bt_system_reset was replaced by system_reboot; it re-emits system_boot.
         self.lib.bt.system.reboot()
         try:
+            # The post-reboot system_boot event is sometimes lost over the USB-CDC link.
+            # Wait a few seconds for it; if it never arrives, initialize the (already
+            # running) NCP directly so the relay still comes up.
+            if not self._await_boot(timeout_s=4.0):
+                self.log.warning("No system_boot after reboot; initializing NCP directly.")
+                self._initialize()
             # timeout=None blocks per event; max_time=None runs until interrupted.
             for evt in self.lib.gen_events(timeout=None, max_time=None):
                 self._dispatch(evt)
@@ -316,6 +323,14 @@ class RelayOrchestrator:
             self.log.info("Interrupted; tearing down.")
         finally:
             self.close()
+
+    def _await_boot(self, timeout_s: float) -> bool:
+        """Drain events for up to timeout_s waiting for system_boot."""
+        for evt in self.lib.gen_events(timeout=timeout_s, max_time=timeout_s):
+            self._dispatch(evt)
+            if getattr(evt, "_str", "") == "bt_evt_system_boot":
+                return True
+        return False
 
     # -- BGAPI helpers -------------------------------------------------------
 
@@ -384,6 +399,12 @@ class RelayOrchestrator:
     def _on_system_boot(self, evt):
         self.log.info("Relay NCP boot: BLE stack %d.%d.%d",
                       evt.major, evt.minor, evt.patch)
+        self._initialize()
+
+    def _initialize(self):
+        if self.state.initialized:
+            return
+        self.state.initialized = True
         # Report the target's CS capabilities (sanity check that ACP is wired).
         self._acp(pack_get_target_config())
         # Capture the token's real AD first, then clone-advertise from the scan result.
@@ -396,14 +417,22 @@ class RelayOrchestrator:
         self._log_discovery(evt)
         if not self._is_genuine_token(evt):
             return
+        # The token emits several frames: a connectable legacy ADV with the local name +
+        # CS service UUIDs, a non-connectable manufacturer-data frame, and extended frames
+        # carrying only flags. Clone ONLY the connectable, named frame so the genuine
+        # initiator can connect to us and see the expected name/services.
+        ad = bytes(evt.data)
+        connectable = bool(getattr(evt, "event_flags", 0) & 0x01)
+        if not connectable or _parse_adv_name(ad) is None:
+            return
         # Capture the token's real advertising payload for a faithful clone.
-        self.state.captured_ad = bytes(evt.data)
+        self.state.captured_ad = ad
         self.state.token_address = evt.address
         self.state.token_address_type = evt.address_type
         self.state.cloned = True
         self.lib.bt.scanner.stop()
-        self.log.info("Captured token %s AD (%d B). Cloning.",
-                      evt.address, len(self.state.captured_ad))
+        self.log.info("Captured token %s connectable AD (%d B, name=%r). Cloning.",
+                      evt.address, len(ad), _parse_adv_name(ad))
         self._start_clone_advertising()
         if ENABLE_AUTH_BACKHAUL and self.state.token_conn is None:
             self.log.info("Opening auth backhaul to genuine token %s.", evt.address)
@@ -440,6 +469,8 @@ class RelayOrchestrator:
                           evt.connection)
             rsp = self._acp(pack_create_reflector(evt.connection))
             self.state.reflector_active = getattr(rsp, "result", 1) == 0
+            self.log.info("  create_reflector ACP result=0x%04x (active=%s)",
+                          getattr(rsp, "result", 0xFFFF), self.state.reflector_active)
         else:
             self.state.token_conn = evt.connection
             self.log.info("Backhaul to genuine token open (conn %d).", evt.connection)
@@ -448,7 +479,8 @@ class RelayOrchestrator:
 
     def _on_connection_closed(self, evt):
         if evt.connection == self.state.initiator_conn:
-            self.log.info("Initiator leg closed; deleting reflector role.")
+            self.log.info("Initiator leg closed (reason=0x%04x); deleting reflector role.",
+                          getattr(evt, "reason", 0xFFFF))
             if self.state.reflector_active:
                 self._acp(pack_delete_reflector(evt.connection))
             self.state.initiator_conn = None
@@ -464,6 +496,28 @@ class RelayOrchestrator:
                     self.state.token_address,
                     self.state.token_address_type,
                     self.lib.bt.gap.PHY_PHY_1M)
+
+    def _on_connection_parameters(self, evt):
+        # security_mode: 0=none/unencrypted, 1=unauth-encrypted, 2=auth-encrypted, ...
+        self.log.info("Conn %d params: interval=%d security_mode=%d",
+                      evt.connection, getattr(evt, "interval", 0),
+                      getattr(evt, "security_mode", -1))
+
+    def _on_sm_bonded(self, evt):
+        self.log.info("SM bonded conn %d (bonding handle=%d)",
+                      evt.connection, getattr(evt, "bonding", 0xFF))
+
+    def _on_sm_bonding_failed(self, evt):
+        self.log.info("SM bonding FAILED conn %d reason=0x%04x",
+                      evt.connection, getattr(evt, "reason", 0xFFFF))
+
+    def _on_sm_confirm_bonding(self, evt):
+        # Accept incoming bonding so we can observe how far the initiator gets.
+        self.log.info("SM confirm_bonding conn %d -> accepting", evt.connection)
+        try:
+            self.lib.bt.sm.bonding_confirm(evt.connection, 1)
+        except Exception as exc:  # noqa: BLE001
+            self.log.warning("bonding_confirm failed: %s", exc)
 
     def _on_user_cs_service_message_to_host(self, evt):
         """CS ACP events from the relay's reflector/initiator role."""
@@ -523,11 +577,12 @@ class RelayOrchestrator:
 
 def build_connector(args):
     if args.serial:
-        # The stock bt_cs_ncp firmware enables SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE =
-        # uartdrvFlowControlHw, so the host MUST assert RTS/CTS or the NCP never transmits
-        # (CTS stays deasserted -> "No response"). Default on; --no-flow disables it.
+        # This bt_cs_ncp build runs with SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE =
+        # uartdrvFlowControlNone (the DK2606A board controller does not drive the EFR's
+        # RTS/CTS), so the host must NOT use HW flow control. --flow re-enables it if you
+        # reflash an NCP that keeps HW flow control.
         return bgapi.SerialConnector(args.serial, baudrate=args.baud,
-                                     rtscts=not args.no_flow)
+                                     rtscts=args.flow)
     if args.ip:
         return bgapi.SocketConnector((args.ip, args.port))
     raise SystemExit("Specify --serial COMx or --ip <addr> [--port 4901].")
@@ -538,8 +593,8 @@ def main(argv=None):
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--serial", help="Relay NCP serial port, e.g. COM7")
     ap.add_argument("--baud", type=int, default=115200)
-    ap.add_argument("--no-flow", action="store_true",
-                    help="Disable HW RTS/CTS flow control (stock NCP needs it ON).")
+    ap.add_argument("--flow", action="store_true",
+                    help="Enable HW RTS/CTS flow control (only if the NCP keeps it ON).")
     ap.add_argument("--ip", help="Relay NCP WSTK IP (raw VCOM TCP)")
     ap.add_argument("--port", type=int, default=4901)
     ap.add_argument("-v", "--verbose", action="store_true")

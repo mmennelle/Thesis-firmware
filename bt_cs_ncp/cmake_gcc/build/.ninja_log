@@ -226,3 +226,6 @@
 40	361	8040603035639548	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sli_bt_ncp_transport_usart_isr.c.obj	745e0bc67bad7afb
 32	412	8040603035558050	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sl_uartdrv_init.c.obj	1bb0931844933b02
 413	1358	8040603039363119	base/bt_cs_ncp.out	4ff7e1e0f965cf50
+61	286	8040604340442426	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sli_bt_ncp_transport_usart_isr.c.obj	745e0bc67bad7afb
+52	398	8040604340361054	CMakeFiles/slc.dir/base/C_/Users/mpmen/SimplicityStudio/BLE-thesis/bt_cs_ncp/autogen/sl_uartdrv_init.c.obj	1bb0931844933b02
+399	1185	8040604343825022	base/bt_cs_ncp.out	4ff7e1e0f965cf50

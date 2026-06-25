@@ -1,0 +1,223 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: bt_cs_ncp_2606
+label: bt_cs_ncp_2606
+description: |
+  Network Co-Processor (NCP) target application for Channel Sounding (CS). Runs the Bluetooth stack and provides access to it by exposing the Bluetooth API (BGAPI) via UART connection. In addition to the standard NCP features, it listens to Channel Sounding specific user messages, and executes them. This application also features a CS Initiator with Real Time Locating (RTL) library and a CS Reflector device role that can be instantiated or deleted with the CS specific user messages.
+category: Bluetooth Examples
+filter:
+- name: Device Type
+  value:
+  - NCP
+- name: Project Difficulty
+  value:
+  - Beginner
+- name: Wireless Technology
+  value:
+  - Bluetooth
+package: bluetooth_le_app
+quality: production
+readme:
+- path: readme.md
+source:
+- path: app.c
+- path: rtl_log.c
+- path: extended_result.c
+tag:
+- hwfilter:board:hardware_board_has_hfxo_freq_40mhz
+- hwfilter:device:device_generic_family_efr32xg24
+- prebuilt_demo
+- hwfilter:device:device_supports_bluetooth
+- hwfilter:ram:128k
+- toolchain:gcc
+include:
+- path: .
+  file_list:
+  - path: rtl_log.h
+  - path: extended_result.h
+sdk:
+  vendor: silabs
+  id: simplicity_sdk
+  version: 2025.12.3
+toolchain_settings: [
+  ]
+component:
+- package: simplicity_sdk
+  vendor: silabs
+  id: EFR32MG24B210F1536IM48
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_controller_anchor_selection
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_connection_role_central
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_connection_role_peripheral
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_cs
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_dynamic_gattdb
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_extended_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_extended_scanner
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gap
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_gatt_server
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_legacy_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_legacy_scanner
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_nvm
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_periodic_advertiser
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_sm
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_sync
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_system
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_feature_test
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_stack
+- package: simplicity_sdk
+  vendor: silabs
+  id: bluetooth_utility_bgapi_trace
+- package: simplicity_sdk
+  vendor: silabs
+  id: brd2606a
+- package: simplicity_sdk
+  vendor: silabs
+  id: clock_manager
+- package: simplicity_sdk
+  vendor: silabs
+  id: cs_acp
+- package: simplicity_sdk
+  vendor: silabs
+  id: cs_antenna
+- package: simplicity_sdk
+  vendor: silabs
+  id: cs_initiator
+- package: simplicity_sdk
+  vendor: silabs
+  id: cs_reflector
+- package: simplicity_sdk
+  vendor: silabs
+  id: cs_result
+- package: simplicity_sdk
+  vendor: silabs
+  id: device_init
+- package: simplicity_sdk
+  vendor: silabs
+  id: iostream_bgapi_trace
+- package: simplicity_sdk
+  instance:
+  - mock
+  vendor: silabs
+  id: iostream_dummy
+- package: simplicity_sdk
+  vendor: silabs
+  id: mpu
+- package: simplicity_sdk
+  vendor: silabs
+  id: ncp
+- package: simplicity_sdk
+  vendor: silabs
+  id: ncp_user_cmd
+- package: simplicity_sdk
+  vendor: silabs
+  id: rail_util_ble_cs_antenna_offset
+- package: simplicity_sdk
+  vendor: silabs
+  id: rtllib
+- package: simplicity_sdk
+  instance:
+  - btn0
+  - btn1
+  vendor: silabs
+  id: simple_button
+- package: simplicity_sdk
+  vendor: silabs
+  id: sl_main
+- package: simplicity_sdk
+  vendor: silabs
+  id: toolchain_gcc
+- package: simplicity_sdk
+  instance:
+  - vcom
+  vendor: silabs
+  id: uartdrv_usart
+other_file:
+- path: image/readme_img0.png
+define:
+- name: SLI_BGAPI_TRACE_DISABLE_AUTO_START
+  value: '1'
+config_file:
+- path: config/app_config.h
+configuration:
+- name: SL_CLOCK_MANAGER_HFRCO_DPLL_EN
+  value: '1'
+- name: SL_CLOCK_MANAGER_DPLL_FREQ
+  value: '80000000'
+- name: SL_CLOCK_MANAGER_SYSCLK_SOURCE
+  value: CMU_SYSCLKCTRL_CLKSEL_HFRCODPLL
+- unless:
+  - hardware_board
+  name: SL_CLOCK_MANAGER_HFXO_FREQ
+  value: '40000000'
+- name: SL_CLOCK_MANAGER_PCLK_DIVIDER
+  value: CMU_SYSCLKCTRL_PCLKPRESC_DIV2
+- name: SL_STACK_SIZE
+  value: '3496'
+- name: SL_BT_CONFIG_BUFFER_SIZE
+  value: '10000'
+- name: SL_BT_CONFIG_USER_ADVERTISERS
+  value: '4'
+- name: SL_BT_CONFIG_MAX_CONNECTIONS
+  value: '4'
+- name: SL_BT_CONFIG_MAX_CS_PROCEDURES
+  value: '4'
+- name: SL_BT_CONTROLLER_SCANNER_RECEPTION_EARLY_ABORT
+  value: '1'
+- name: SL_BT_CONTROLLER_CONN_EVENT_LENGTH_EXTENSION
+  value: '1'
+- name: SL_BOARD_ENABLE_VCOM
+  value: '1'
+- name: SL_UARTDRV_USART_VCOM_FLOW_CONTROL_TYPE
+  value: uartdrvFlowControlHw
+- condition:
+  - psa_crypto
+  name: SL_PSA_KEY_USER_SLOT_COUNT
+  value: '0'
+- name: SL_BGAPI_TRACE_RTT_BUFFER_SIZE
+  value: '4096'
+- name: BUFFER_SIZE_UP
+  value: '4'
+- name: BUFFER_SIZE_DOWN
+  value: '4'
+ui_hints:
+  highlight:
+  - path: readme.md
+    focus: true
+
